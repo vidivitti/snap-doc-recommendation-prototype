@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.DS_Store
+
+# Local-only launcher with machine-specific paths
+Start SNAP Prototype.command
+
+# Local/editor files
+.env
+.env.local
+.vscode/
+
+# Research/export working files, not needed for hosting
+outputs/
+spreadsheet-build/
