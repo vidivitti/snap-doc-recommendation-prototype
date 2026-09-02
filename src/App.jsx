@@ -62,12 +62,52 @@ const CARD_EMOJI_BY_RULE_ID = {
   "EXP-018": "🩺💊"
 };
 
+const CARD_ICON_BY_RULE_ID = {
+  "ID-001": "doc",
+  "INC-001": "cash",
+  "INC-019": "cash",
+  "INC-020": "cash",
+  "INC-003": "cash",
+  "INC-005": "doc",
+  "INC-006": "credit",
+  "INC-008": "credit",
+  "INC-010": "credit",
+  "INC-012": "family",
+  "INC-014": "credit",
+  "INC-015": "credit",
+  "INC-016": "home",
+  "INC-017": "credit",
+  "INC-018": "credit",
+  "WRK-001": "doc",
+  "EXP-001": "home",
+  "EXP-002": "home",
+  "EXP-003": "home",
+  "EXP-004": "home",
+  "EXP-005": "home",
+  "EXP-006": "lightbulb",
+  "EXP-007": "lightbulb",
+  "EXP-008": "lightbulb",
+  "EXP-009": "lightbulb",
+  "EXP-010": "phone",
+  "EXP-011": "family",
+  "EXP-012": "car",
+  "EXP-015": "car",
+  "EXP-013": "family",
+  "EXP-014": "medical",
+  "EXP-016": "car",
+  "EXP-017": "medical",
+  "EXP-018": "medical"
+};
+
 const DEFAULT_SETTINGS = {
   suppressInternalData: true,
   includeIdentity: true
 };
 
 const EMPTY_APPLICATION = {
+  certification: {
+    type: "simplified"
+  },
   identity: {
     likelyRMVMatch: true
   },
@@ -1093,6 +1133,7 @@ export function recommendVerifications(app, settings = DEFAULT_SETTINGS) {
     const item = {
       key: rule.id,
       icon: ICONS[rule.icon] || "Doc",
+      iconName: CARD_ICON_BY_RULE_ID[rule.id] || "doc",
       emoji: CARD_EMOJI_BY_RULE_ID[rule.id] || "📝",
       title: rule.title,
       why: rule.microcopy || "Send proof if DTA asks or if you have it ready.",
@@ -1213,11 +1254,153 @@ function runPrototypeTests() {
 
 runPrototypeTests();
 
+function MayflowerIcon({ name, size = 32, className = "" }) {
+  const strokeProps = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2.4,
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  };
+
+  const icons = {
+    check: (
+      <path {...strokeProps} d="M5 17.5 11.5 24 27 8" />
+    ),
+    doc: (
+      <>
+        <path {...strokeProps} d="M9 4h10l6 6v18H9z" />
+        <path {...strokeProps} d="M19 4v7h6" />
+      </>
+    ),
+    mail: (
+      <>
+        <rect {...strokeProps} x="5" y="8" width="22" height="16" />
+        <path {...strokeProps} d="m6 9 10 8 10-8" />
+      </>
+    ),
+    phone: (
+      <path {...strokeProps} d="M11 5 7 9c1 8 8 15 16 16l4-4-5-5-3 3c-3-1-5-3-6-6l3-3z" />
+    ),
+    credit: (
+      <>
+        <rect {...strokeProps} x="5" y="9" width="22" height="15" rx="1" />
+        <path {...strokeProps} d="M5 14h22M9 20h5" />
+      </>
+    ),
+    cash: (
+      <>
+        <rect {...strokeProps} x="4" y="8" width="24" height="16" rx="1" />
+        <circle {...strokeProps} cx="16" cy="16" r="4" />
+        <path {...strokeProps} d="M8 12h1M23 20h1" />
+      </>
+    ),
+    home: (
+      <>
+        <path {...strokeProps} d="M4 15 16 5l12 10" />
+        <path {...strokeProps} d="M7 14v14h18V14" />
+        <path {...strokeProps} d="M13 28v-8h6v8" />
+      </>
+    ),
+    lightbulb: (
+      <>
+        <path {...strokeProps} d="M11 20c-2-2-3-4-3-7a8 8 0 1 1 16 0c0 3-1 5-3 7" />
+        <path {...strokeProps} d="M12 23h8M13 27h6" />
+      </>
+    ),
+    family: (
+      <>
+        <circle {...strokeProps} cx="11" cy="10" r="4" />
+        <circle {...strokeProps} cx="22" cy="12" r="3" />
+        <path {...strokeProps} d="M4 27c1-6 4-9 8-9s7 3 8 9" />
+        <path {...strokeProps} d="M18 27c1-4 3-6 6-6 2 0 4 2 5 6" />
+      </>
+    ),
+    car: (
+      <>
+        <path {...strokeProps} d="M7 21h18l-2-8H9z" />
+        <path {...strokeProps} d="M5 21v-5l3-3M27 21v-5l-3-3" />
+        <circle {...strokeProps} cx="10" cy="23" r="2" />
+        <circle {...strokeProps} cx="22" cy="23" r="2" />
+      </>
+    ),
+    medical: (
+      <>
+        <path {...strokeProps} d="M16 6v20M6 16h20" />
+        <rect {...strokeProps} x="5" y="5" width="22" height="22" rx="3" />
+      </>
+    ),
+    warning: (
+      <>
+        <path {...strokeProps} d="M16 5 29 27H3z" />
+        <path {...strokeProps} d="M16 12v7M16 23h.01" />
+      </>
+    ),
+    info: (
+      <>
+        <circle {...strokeProps} cx="16" cy="16" r="12" />
+        <path {...strokeProps} d="M16 14v8M16 10h.01" />
+      </>
+    )
+  };
+
+  return (
+    <span aria-hidden="true" className={`dta-icon ${className}`}>
+      <svg width={size} height={size} viewBox="0 0 32 32" role="img">
+        {icons[name] || icons.doc}
+      </svg>
+    </span>
+  );
+}
+
+function InlineMessage({ tone = "info", title, children }) {
+  const styles = {
+    warning: {
+      icon: "warning",
+      iconClass: "text-[#a15c00]",
+      borderClass: "border-[#d0d0d0]",
+      bgClass: "bg-white"
+    },
+    info: {
+      icon: "info",
+      iconClass: "text-[#145f9f]",
+      borderClass: "border-[#d0d0d0]",
+      bgClass: "bg-white"
+    }
+  };
+  const style = styles[tone] || styles.info;
+
+  return (
+    <div className={`rounded-md border ${style.borderClass} ${style.bgClass} p-4`}>
+      <div className="flex items-start gap-3">
+        <MayflowerIcon name={style.icon} size={18} className={`mt-0.5 ${style.iconClass}`} />
+        <div>
+          <h2 className="text-sm font-bold leading-snug text-[#141414]">{title}</h2>
+          <p className="mt-1 text-sm leading-relaxed text-[#141414]">{children}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RecommendationSection({ label, children }) {
+  return (
+    <section className="mt-8">
+      <div className="border-b border-[#b7ced6] pb-2">
+        <h2 className="text-xs font-bold leading-snug text-[#141414]">{label}</h2>
+      </div>
+      <div className="mt-5 space-y-5">
+        {children}
+      </div>
+    </section>
+  );
+}
+
 function Badge({ children, tone = "default" }) {
   const styles = {
-    default: "bg-white text-slate-800 border-slate-400",
-    required: "bg-slate-100 text-slate-900 border-slate-500",
-    recommended: "bg-white text-slate-800 border-slate-400"
+    default: "bg-white text-[#141414] border-[#79a6b7]",
+    required: "bg-[#eef7f8] text-[#141414] border-[#79a6b7]",
+    recommended: "bg-white text-[#141414] border-[#79a6b7]"
   };
 
   return (
@@ -1317,7 +1500,7 @@ function DetailsToggle({ details }) {
   if (!details?.label || !details?.content) return null;
 
   return (
-    <div className="mt-3 w-full max-w-[400px] border border-slate-300 bg-slate-50 p-3">
+    <div className="mt-3 w-full max-w-[400px] border border-[#b7ced6] bg-[#f5fbfc] p-3">
       <button
         type="button"
         className="text-left text-sm font-normal underline"
@@ -1337,18 +1520,14 @@ function DetailsToggle({ details }) {
 
 function RecommendationCard({ rec }) {
   return (
-    <div className="border border-slate-300 bg-white p-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <h3 className="flex items-center gap-2 text-lg font-bold text-slate-950">
-          <span aria-hidden="true" className="shrink-0 text-4xl leading-none">
-            {rec.emoji}
-          </span>
+    <div className="dta-card p-5 sm:p-6">
+      <div className="flex flex-wrap items-center gap-3">
+        <h3 className="flex items-center gap-3 text-xl font-bold leading-tight text-[#141414]">
+          <MayflowerIcon name={rec.iconName} size={36} />
           <span>
           {rec.title}
           </span>
         </h3>
-
-        {rec.recommended ? <Badge tone="recommended">Optional, but may increase benefits</Badge> : null}
       </div>
 
       <div className="mt-2">
@@ -1363,7 +1542,7 @@ function RecommendationCard({ rec }) {
       ) : null}
 
       {rec.helperText ? (
-        <p className="mt-3 border-l-4 border-slate-300 bg-slate-50 p-3 text-sm leading-relaxed text-slate-800">
+        <p className="mt-3 border-l-4 border-[#79a6b7] bg-[#f5fbfc] p-3 text-sm leading-relaxed text-slate-800">
           {rec.helperText}
         </p>
       ) : null}
@@ -1377,7 +1556,7 @@ function ToggleInput({ app, setApp, path, label }) {
   const checked = Boolean(getPathValue(app, path));
 
   return (
-    <label className="flex cursor-pointer items-center gap-3 border border-slate-300 bg-white p-3 text-sm">
+    <label className="dta-input-choice">
       <input
         type="checkbox"
         checked={checked}
@@ -1392,10 +1571,29 @@ function ToggleInput({ app, setApp, path, label }) {
   );
 }
 
+function ChoiceInput({ app, setApp, path, value, label }) {
+  const checked = getPathValue(app, path) === value;
+
+  return (
+    <label className="dta-input-choice">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={() => {
+          const next = clone(app);
+          setPathValue(next, path, value);
+          setApp(next);
+        }}
+      />
+      <span>{label}</span>
+    </label>
+  );
+}
+
 function InputGroup({ title, children }) {
   return (
-    <section className="border border-slate-300 bg-white p-4">
-      <h3 className="text-[15px] font-semibold text-slate-950">{title}</h3>
+    <section className="dta-card bg-white p-4 sm:p-5">
+      <h3 className="text-base font-bold text-[#141414]">{title}</h3>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">{children}</div>
     </section>
   );
@@ -1403,13 +1601,18 @@ function InputGroup({ title, children }) {
 
 function ApplicationEditor({ app, setApp }) {
   return (
-    <section className="border border-slate-300 bg-white p-5">
-      <h2 className="text-lg font-semibold text-slate-950">Prototype inputs</h2>
-      <p className="mt-1 text-sm text-slate-600">
+    <section className="dta-card bg-white p-5 sm:p-6">
+      <h2 className="text-xl font-bold text-[#141414]">Prototype inputs</h2>
+      <p className="mt-2 text-base leading-relaxed text-slate-700">
         These checkboxes mirror the DTA Connect SNAP application answers used by the verification mapping spreadsheet.
       </p>
 
       <div className="mt-4 space-y-4">
+        <InputGroup title="Client's certification type">
+          <ChoiceInput app={app} setApp={setApp} path="certification.type" value="simplified" label="Simplified: client requires interview" />
+          <ChoiceInput app={app} setApp={setApp} path="certification.type" value="edsap" label="EDSAP: client's interview waived" />
+        </InputGroup>
+
         <InputGroup title="Income and benefit types">
           <ToggleInput app={app} setApp={setApp} path="income.wages.reported" label="Wages" />
           <ToggleInput app={app} setApp={setApp} path="income.wages.changed" label="Still working but income changed" />
@@ -1462,16 +1665,116 @@ function ApplicationEditor({ app, setApp }) {
 function ClientActions() {
   return (
     <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-      <button type="button" className="border border-slate-900 bg-slate-900 px-5 py-3 text-sm font-bold text-white">
-        Upload documents now
+      <button type="button" className="dta-button-primary">
+        Send documents to DTA
       </button>
-      <button type="button" className="border border-slate-500 bg-white px-5 py-3 text-sm font-bold text-slate-900">
-        Send me this list for later
-      </button>
-      <button type="button" className="border border-slate-500 bg-white px-5 py-3 text-sm font-bold text-slate-900">
-        Download list
+      <button type="button" className="dta-button-secondary">
+        I'll upload documents later
       </button>
     </div>
+  );
+}
+
+function SubmittedScreen({ applicationNumber, onReviewProof }) {
+  return (
+    <section className="dta-shell">
+      <div className="dta-hero-band px-6 py-8 sm:px-16 sm:py-10">
+        <div className="grid max-w-4xl grid-cols-[56px_1fr] items-start gap-4">
+          <MayflowerIcon name="check" size={54} className="self-start pt-1 text-[#00856d]" />
+          <div>
+            <h1 className="max-w-3xl text-3xl font-bold leading-tight text-[#141414] sm:text-4xl">
+              Your Recertification was submitted
+            </h1>
+          </div>
+        </div>
+
+        <p className="mt-8 max-w-4xl text-lg text-[#141414]">
+          Your web application number is <strong className="font-bold">{applicationNumber}</strong>
+        </p>
+        <a href="#" className="mt-3 inline-block text-base font-bold text-[#145f9f] underline">
+          Download a copy of your application
+        </a>
+      </div>
+
+      <div className="px-6 py-8 sm:px-16">
+        <h2 className="text-xl font-bold text-[#141414]">What's next:</h2>
+
+        <div className="mt-10 grid grid-cols-[56px_1fr] items-start gap-4">
+          <MayflowerIcon name="doc" size={32} className="self-start text-[#141414]" />
+          <div>
+            <h3 className="max-w-3xl text-2xl font-bold leading-tight text-[#141414]">Submit as much proof as you can now</h3>
+            <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#141414]">
+              We'll suggest documents to submit based on your application answers.
+            </p>
+            <button
+              type="button"
+              onClick={onReviewProof}
+              className="dta-button-primary mt-5"
+            >
+              Review suggested proof →
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-8 grid grid-cols-[56px_1fr] items-start gap-4">
+          <MayflowerIcon name="phone" size={32} className="self-start text-[#141414]" />
+          <div>
+            <h3 className="text-2xl font-bold leading-tight text-[#141414]">Have your DTA Interview (if required)</h3>
+            <p className="mt-5 text-base leading-relaxed text-[#141414]">
+              If your household has <strong className="font-bold">only</strong> elderly or disabled members, you won't have an interview.
+            </p>
+            <p className="mt-5 text-base leading-relaxed text-[#141414]">
+              Otherwise, <strong className="font-bold">you will get a call from DTA in 1 to 3 days</strong>.
+            </p>
+            <p className="mt-5 text-base leading-relaxed text-[#141414]">
+              If you miss this call, you'll get a Recertification Interview Appointment notice. Your interview will be scheduled in 7 to 10 days. If you miss the interview you can call DTA back.
+            </p>
+            <p className="mt-5 text-base leading-relaxed text-[#141414]">
+              During your interview, a case worker will review your recertification answers and ask other questions to check if you still qualify for SNAP.
+            </p>
+            <p className="mt-5 text-base italic leading-relaxed text-[#141414]">
+              Tip: Add 1-800-XXX-XXXX to your phone contacts so you recognize the call from DTA
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-8 grid grid-cols-[56px_1fr] items-start gap-4">
+          <MayflowerIcon name="mail" size={32} className="self-start text-[#141414]" />
+          <div>
+            <h3 className="text-2xl font-bold leading-tight text-[#141414]">Get notices about what's next</h3>
+            <p className="mt-5 text-base leading-relaxed text-[#141414]">
+              DTA will send you letters in the mail to request more information or let you know if you still qualify for SNAP. These notices will also be available in DTAConnect
+            </p>
+            <p className="mt-5 text-base leading-relaxed text-[#141414]">
+              In some cases you might need to send more proof of your situation like paystubs, receipts or expenses.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-8 grid grid-cols-[56px_1fr] items-start gap-4">
+          <MayflowerIcon name="credit" size={32} className="self-start text-[#141414]" />
+          <div>
+            <h3 className="text-2xl font-bold leading-tight text-[#141414]">Get a decision</h3>
+            <p className="mt-5 text-base leading-relaxed text-[#141414]">If approved your benefits will continue.</p>
+            <p className="mt-5 text-base leading-relaxed text-[#141414]">
+              Your Benefits Determination Letter will also have helpful information about when you'll need to talk to DTA again.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-10 rounded-md border border-[#d0d0d0] bg-white p-5 text-base leading-relaxed text-[#141414]">
+          If you need more help with food, <a href="https://www.mass.gov/how-to/find-a-local-food-bank" className="underline">find your local food bank.</a>
+        </div>
+
+        <button
+          type="button"
+          onClick={onReviewProof}
+          className="dta-button-primary mt-16"
+        >
+          Review suggested proof →
+        </button>
+      </div>
+    </section>
   );
 }
 
@@ -1492,9 +1795,9 @@ function PasswordGate({ onUnlock }) {
   }
 
   return (
-    <main className="min-h-screen bg-white p-4 text-slate-900 sm:p-8" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-      <section className="mx-auto mt-16 max-w-md border border-slate-300 bg-white p-6 sm:p-8">
-        <h1 className="text-xl font-semibold text-slate-950">DTA Discovery | Verification List Prototype</h1>
+    <main className="dta-page" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+      <section className="mx-auto mt-16 max-w-md border border-[#b7ced6] bg-white p-6 sm:p-8">
+        <h1 className="text-xl font-semibold text-[#141414]">DTA Discovery | Verification List Prototype</h1>
         <p className="mt-3 text-sm leading-relaxed text-slate-700">
           Enter the password to view this prototype.
         </p>
@@ -1516,7 +1819,7 @@ function PasswordGate({ onUnlock }) {
 
           {error ? <p className="text-sm text-red-700">{error}</p> : null}
 
-          <button type="submit" className="border border-slate-900 bg-slate-900 px-5 py-3 text-sm font-bold text-white">
+          <button type="submit" className="dta-button-primary">
             Continue
           </button>
         </form>
@@ -1535,10 +1838,18 @@ export default function SnapVerificationPrototype() {
   const [applicationNumber] = useState(() => String(Math.floor(10000000 + Math.random() * 90000000)));
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [mode, setMode] = useState("client");
+  const [clientScreen, setClientScreen] = useState("submitted");
   const [showScenarioButtons, setShowScenarioButtons] = useState(false);
   const [showPolicyToggles, setShowPolicyToggles] = useState(true);
 
   const result = useMemo(() => recommendVerifications(app, settings), [app, settings]);
+  const certificationType = app.certification?.type || "simplified";
+  const requiresInterview = certificationType !== "edsap";
+  const recommendationIntro = requiresInterview
+    ? "Sending proof before your interview may help you get benefits faster"
+    : "Sending proof now may help you get benefits faster";
+  const requiredRecommendations = result.recs.filter((rec) => rec.required);
+  const optionalRecommendations = result.recs.filter((rec) => !rec.required);
 
   function loadScenario(key) {
     if (scenarioKey === key) {
@@ -1556,38 +1867,38 @@ export default function SnapVerificationPrototype() {
   }
 
   return (
-    <main className="min-h-screen bg-white p-4 text-slate-900 sm:p-8" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-      <div className="mx-auto max-w-6xl">
+    <main className="dta-page" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+      <div className={mode === "logic" ? "dta-logic-shell" : ""}>
         {mode === "logic" ? (
-          <header className="mb-6 flex flex-col gap-4 border-b border-slate-300 pb-6 sm:flex-row sm:items-end sm:justify-between">
+          <header className="mb-6 flex flex-col gap-4 border-b border-[#b7ced6] bg-white p-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h1 className="text-[22px] font-semibold tracking-normal text-slate-950">DTA Discovery | Verification List Prototype</h1>
+              <h1 className="text-[22px] font-semibold tracking-normal text-[#141414]">DTA Discovery | Verification List Prototype</h1>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-700">
                 A rules-based prototype that converts SNAP application answers into a personalized and actionable verification recommendation.
               </p>
             </div>
 
             <div className="flex gap-2">
-              <button type="button" onClick={() => setMode("client")} className={`border px-4 py-2 text-sm font-bold ${mode === "client" ? "border-slate-900 bg-slate-900 text-white" : "border-slate-500 bg-white text-slate-900"}`}>Client view</button>
-              <button type="button" onClick={() => setMode("logic")} className={`border px-4 py-2 text-sm font-bold ${mode === "logic" ? "border-slate-900 bg-slate-900 text-white" : "border-slate-500 bg-white text-slate-900"}`}>Logic view</button>
+              <button type="button" onClick={() => setMode("client")} className={`dta-tab ${mode === "client" ? "dta-tab-active" : ""}`}>Client view</button>
+              <button type="button" onClick={() => setMode("logic")} className={`dta-tab ${mode === "logic" ? "dta-tab-active" : ""}`}>Logic view</button>
             </div>
           </header>
         ) : (
-          <div className="mb-3 flex justify-end gap-2">
-            <button type="button" onClick={() => setMode("client")} className="border border-slate-300 bg-slate-100 px-2 py-1 text-xs font-normal text-slate-500">Client view</button>
-            <button type="button" onClick={() => setMode("logic")} className="border border-slate-300 bg-white px-2 py-1 text-xs font-normal text-slate-500">Logic view</button>
+          <div className="dta-top-actions">
+            <button type="button" onClick={() => setMode("client")} className="dta-tab dta-tab-active opacity-80">Client view</button>
+            <button type="button" onClick={() => setMode("logic")} className="dta-tab opacity-80">Logic view</button>
           </div>
         )}
 
         {mode === "logic" ? (
           <>
-            <section className="mb-6 border border-slate-300 bg-white p-4">
+            <section className="mb-6 border border-[#b7ced6] bg-white p-4">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h2 className="text-lg font-semibold text-slate-950">Sample application answers</h2>
+                  <h2 className="text-lg font-semibold text-[#141414]">Sample application answers</h2>
                   <p className="mt-1 text-sm text-slate-600">Optional scenario shortcuts for demos and future testing scripts.</p>
                 </div>
-                <button type="button" onClick={() => setShowScenarioButtons(!showScenarioButtons)} className="border border-slate-500 bg-white px-4 py-2 text-sm font-bold text-slate-900">
+                <button type="button" onClick={() => setShowScenarioButtons(!showScenarioButtons)} className="dta-button-secondary px-4 py-2 text-sm">
                   {showScenarioButtons ? "Hide scenarios" : "Show scenarios"}
                 </button>
               </div>
@@ -1612,27 +1923,27 @@ export default function SnapVerificationPrototype() {
                 <ApplicationEditor app={app} setApp={setApp} />
               </div>
 
-              <div className="border border-slate-300 bg-white p-5">
+              <div className="dta-card bg-white p-5">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <h2 className="text-lg font-bold text-slate-950">Policy assumptions</h2>
+                    <h2 className="text-lg font-bold text-[#141414]">Policy assumptions</h2>
                     <p className="mt-1 text-sm text-slate-600">Controls assumptions about what DTA can verify through trusted data before asking clients for documents.</p>
                   </div>
-                  <button type="button" onClick={() => setShowPolicyToggles(!showPolicyToggles)} className="border border-slate-500 bg-white px-4 py-2 text-sm font-bold text-slate-900">
+                  <button type="button" onClick={() => setShowPolicyToggles(!showPolicyToggles)} className="dta-button-secondary px-4 py-2 text-sm">
                     {showPolicyToggles ? "Hide toggles" : "Show toggles"}
                   </button>
                 </div>
 
                 <div className="mt-4 space-y-3 text-sm">
-                  <label className="flex gap-3 border border-slate-300 bg-white p-3">
+                  <label className="flex gap-3 border border-[#b7ced6] bg-white p-3">
                     <input type="checkbox" checked={settings.suppressInternalData} onChange={(event) => setSettings({ ...settings, suppressInternalData: event.target.checked })} />
                     <span>Suppress items below that DTA may verify with internally available data sources</span>
                   </label>
                 </div>
 
                 {showPolicyToggles ? (
-                  <div className="mt-4 border border-slate-300 bg-white p-4">
-                    <h3 className="font-bold text-slate-950">Internal data suppression toggles</h3>
+                  <div className="mt-4 border border-[#b7ced6] bg-white p-4">
+                    <h3 className="font-bold text-[#141414]">Internal data suppression toggles</h3>
                     <p className="mt-1 text-sm text-slate-600">Tune the individual data-match assumptions used by the recommendation logic.</p>
                     <div className="mt-4 grid gap-3">
                       <ToggleInput app={app} setApp={setApp} path="identity.likelyRMVMatch" label="Identity likely available through RMV/DTA data" />
@@ -1649,35 +1960,64 @@ export default function SnapVerificationPrototype() {
         ) : null}
 
         <div className={`grid gap-6 ${mode === "logic" ? "lg:grid-cols-[1fr_330px]" : ""}`}>
-          <section className="border border-slate-300 bg-white p-6 sm:p-10">
+          {mode === "client" && clientScreen === "submitted" ? (
+            <SubmittedScreen
+              certificationType={certificationType}
+              applicationNumber={applicationNumber}
+              onReviewProof={() => setClientScreen("recommendations")}
+            />
+          ) : (
+            <section className="dta-shell">
+            <div className="dta-hero-band px-6 py-8 sm:px-16 sm:py-10">
             {mode === "client" ? (
-              <div className="mb-6 border-b border-slate-300 pb-5">
-                <p className="text-lg font-semibold text-slate-950">Your SNAP application has been submitted</p>
-                <p className="mt-2 text-sm text-slate-700">Your application number is {applicationNumber}</p>
-              </div>
+              <button
+                type="button"
+                onClick={() => setClientScreen("submitted")}
+                className="mb-4 text-sm font-normal text-[#003b5c] underline"
+              >
+                Back to submitted screen
+              </button>
             ) : null}
 
-            <h2 className="mt-4 text-2xl font-semibold">We recommend you send proof as soon as you can</h2>
-            <p className="mt-3 max-w-2xl text-base text-slate-700">Sending proof with your application (or soon after) may help DTA decide your case faster.</p>
+            <h1 className="mt-4 max-w-4xl text-3xl font-bold leading-tight text-[#141414] sm:text-4xl">Submit as much proof as you can now</h1>
+            <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#141414]">{recommendationIntro}</p>
             {mode === "client" ? (
-              <div className="mt-4 max-w-2xl border border-slate-300 bg-slate-50 p-3 text-sm text-slate-700">
-                DTA may ask for additional proof once they review your application
+              <div className="mt-5 max-w-2xl">
+                <InlineMessage tone="warning" title="DTA may request additional proof">
+                  The suggestions below are based on what you told us. DTA may ask for additional documents after a worker reviews your recertification.
+                </InlineMessage>
               </div>
             ) : null}
+            </div>
 
-            <div className="mt-8 space-y-4">
+            <div className="space-y-5 px-6 py-8 sm:px-16">
               {result.recs.length === 0 ? (
-                <div className="border border-slate-300 bg-white p-4 text-sm text-slate-700">No recommendations yet. Use Logic view to select application answers.</div>
+                <div className="dta-card bg-white p-4 text-sm text-slate-700">No recommendations yet. Use Logic view to select application answers.</div>
               ) : null}
-              {result.recs.map((rec, index) => <RecommendationCard key={rec.key} rec={rec} index={index} />)}
-            </div>
 
-            <div className="mt-8 border border-slate-300 bg-slate-50 p-5">
-              <h3 className="font-bold">Submit as much proof as you can.</h3>
-              <p className="mt-1 text-sm text-slate-700">Do not delay sending proof because you are missing one document.</p>
+              {requiredRecommendations.length > 0 ? (
+                <RecommendationSection label="Required to decide if you still qualify">
+                  {requiredRecommendations.map((rec, index) => <RecommendationCard key={rec.key} rec={rec} index={index} />)}
+                </RecommendationSection>
+              ) : null}
+
+              {optionalRecommendations.length > 0 ? (
+                <RecommendationSection label="Optional to get a higher benefit amount">
+                  <InlineMessage tone="info" title="New rules">
+                    SNAP households now have to submit proof to get expense deductions. Sending proof of costs and expenses can increase SNAP benefits, but are not required to qualify for SNAP
+                  </InlineMessage>
+                  {optionalRecommendations.map((rec, index) => <RecommendationCard key={rec.key} rec={rec} index={index} />)}
+                </RecommendationSection>
+              ) : null}
+
+              <div className="dta-card-soft mt-8 p-5">
+                <h3 className="font-bold">Submit as much proof as you can.</h3>
+                <p className="mt-1 text-sm text-slate-700">Do not delay sending proof because you are missing one document.</p>
+              </div>
+              <ClientActions />
             </div>
-            <ClientActions />
           </section>
+          )}
 
           {mode === "logic" ? (
             <aside className="space-y-4">
