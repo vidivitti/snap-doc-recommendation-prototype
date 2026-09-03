@@ -1,4 +1,23 @@
 import React, { useMemo, useState } from "react";
+import {
+  Briefcase,
+  Car,
+  Check,
+  CreditCard,
+  EnvelopeSimple,
+  FileText,
+  FirstAidKit,
+  House,
+  IdentificationCard,
+  Info,
+  Lightbulb,
+  Money,
+  Phone,
+  Prescription,
+  Receipt,
+  UsersThree,
+  Warning
+} from "@phosphor-icons/react";
 
 const PROTOTYPE_PASSWORD = "DTAproof2026";
 
@@ -18,11 +37,48 @@ const ICONS = {
   workStudy: "Student",
   pfml: "Benefit",
   workRules: "Work rules",
-  rent: "Housing",
-  mortgage: "Housing",
+  rent: "Shelter",
+  mortgage: "Shelter",
   utilities: "Utilities",
   dependentCare: "Care",
-  medical: "Medical"
+  medical: "Medical",
+  medicalPair: "Medical + receipt"
+};
+
+const PHOSPHOR_ICON_NAMES_BY_KEY = {
+  identity: "IdentificationCard",
+  wages: "Money",
+  jobEnd: "Briefcase",
+  selfEmployment: "Money",
+  statement: "FileText",
+  socialSecurity: "CreditCard",
+  unemployment: "CreditCard",
+  childSupport: "UsersThree",
+  pension: "CreditCard",
+  veterans: "CreditCard",
+  rentalIncome: "House",
+  workersComp: "CreditCard",
+  workStudy: "FileText",
+  pfml: "CreditCard",
+  workRules: "FileText",
+  rent: "House",
+  mortgage: "House",
+  utilities: "Lightbulb",
+  dependentCare: "UsersThree",
+  medical: "FirstAidKit",
+  medicalPair: "Prescription + Receipt",
+  car: "Car",
+  check: "Check",
+  doc: "FileText",
+  mail: "EnvelopeSimple",
+  phone: "Phone",
+  credit: "CreditCard",
+  cash: "Money",
+  home: "House",
+  lightbulb: "Lightbulb",
+  family: "UsersThree",
+  warning: "Warning",
+  info: "Info"
 };
 
 const CARD_EMOJI_BY_RULE_ID = {
@@ -41,6 +97,15 @@ const CARD_EMOJI_BY_RULE_ID = {
   "INC-016": "💵",
   "INC-017": "💵",
   "INC-018": "💵",
+  "INC-021": "💵",
+  "INC-022": "💵",
+  "INC-023": "💵",
+  "INC-024": "👶💲",
+  "INC-025": "💵",
+  "INC-026": "💵",
+  "INC-027": "💵",
+  "INC-028": "💵",
+  "INC-029": "💵",
   "WRK-001": "📝",
   "EXP-001": "🏠",
   "EXP-002": "🏠",
@@ -54,49 +119,10 @@ const CARD_EMOJI_BY_RULE_ID = {
   "EXP-010": "💡",
   "EXP-011": "👶",
   "EXP-012": "🚗",
-  "EXP-015": "🚗",
   "EXP-013": "👶💲",
   "EXP-014": "🩺💊",
   "EXP-016": "🚗",
-  "EXP-017": "🩺💊",
-  "EXP-018": "🩺💊"
-};
-
-const CARD_ICON_BY_RULE_ID = {
-  "ID-001": "doc",
-  "INC-001": "cash",
-  "INC-019": "cash",
-  "INC-020": "cash",
-  "INC-003": "cash",
-  "INC-005": "doc",
-  "INC-006": "credit",
-  "INC-008": "credit",
-  "INC-010": "credit",
-  "INC-012": "family",
-  "INC-014": "credit",
-  "INC-015": "credit",
-  "INC-016": "home",
-  "INC-017": "credit",
-  "INC-018": "credit",
-  "WRK-001": "doc",
-  "EXP-001": "home",
-  "EXP-002": "home",
-  "EXP-003": "home",
-  "EXP-004": "home",
-  "EXP-005": "home",
-  "EXP-006": "lightbulb",
-  "EXP-007": "lightbulb",
-  "EXP-008": "lightbulb",
-  "EXP-009": "lightbulb",
-  "EXP-010": "phone",
-  "EXP-011": "family",
-  "EXP-012": "car",
-  "EXP-015": "car",
-  "EXP-013": "family",
-  "EXP-014": "medical",
-  "EXP-016": "car",
-  "EXP-017": "medical",
-  "EXP-018": "medical"
+  "EXP-017": "🩺💊"
 };
 
 const DEFAULT_SETTINGS = {
@@ -129,7 +155,18 @@ const EMPTY_APPLICATION = {
     veteransBenefits: { reported: false },
     rentalIncome: { reported: false },
     workersComp: { reported: false },
-    pfml: { reported: false }
+    pfml: { reported: false },
+    changedUnearned: {
+      ssi: false,
+      rsdi: false,
+      unemployment: false,
+      childSupportReceived: false,
+      pension: false,
+      veteransBenefits: false,
+      rentalIncome: false,
+      workersComp: false,
+      pfml: false
+    }
   },
   expenses: {
     rent: { reported: false },
@@ -321,13 +358,14 @@ const VERIFICATION_RULES = [
       "Recent paystubs or statements",
       "Letter from employer showing gross income and number of hours worked",
       "A termination notice or layoff letter",
-      "Employer letter/text/email"
+      "Employer letter/text/email",
+      "if self employed: business records or statements showing when the income ended"
     ],
     "required": true,
     "recommendationType": "Required",
     "dtaDataAvailable": "Sometimes",
     "dtaDataReliability": "Rarely ?\nThe Work Number?",
-    "microcopy": "You said someone is no longer working at an employer. We need to know how much they got during the last 4 weeks, and any pay they will get after their last day workerd. \n\nMake sure any income amounts shows the gross income amount. Gross income is the amount before taxes or benefits are taken out.",
+    "microcopy": "You said someone is no longer working at an employer. We need to know when the job ended and any income they got in the last 4 weeks.\n\nMake sure any income amounts shows the gross income amount. Gross income is the amount before taxes or benefits are taken out.",
     "source": "Interim report; Recertification",
     "helpText": ""
   },
@@ -600,6 +638,222 @@ const VERIFICATION_RULES = [
     "helpText": ""
   },
   {
+    "id": "INC-021",
+    "triggerPath": "income.changedUnearned.ssi",
+    "eligiblePath": null,
+    "suppressible": true,
+    "dataPath": "income.ssi.likelySVESAvailable",
+    "icon": "socialSecurity",
+    "section": "Changed unearned income",
+    "answer": "No longer receiving SSI selected",
+    "title": "Proof that SSI income ended",
+    "examples": [
+      "SSA notice showing SSI ended",
+      "Bank record showing SSI deposits stopped",
+      "Statement explaining when SSI ended"
+    ],
+    "required": true,
+    "recommendationType": "Required",
+    "dtaDataAvailable": "Yes",
+    "dtaDataReliability": "Sometimes — depends on match quality, freshness, and case context\nSVES federal data match",
+    "microcopy": "Send proof showing when SSI income ended, if you have it. DTA may be able to verify this through federal data.",
+    "source": "Recertification",
+    "helpText": "",
+    "notes": "Draft placeholder row for changed unearned income; review/edit content."
+  },
+  {
+    "id": "INC-022",
+    "triggerPath": "income.changedUnearned.rsdi",
+    "eligiblePath": null,
+    "suppressible": true,
+    "dataPath": "income.rsdi.likelySVESAvailable",
+    "icon": "socialSecurity",
+    "section": "Changed unearned income",
+    "answer": "No longer receiving RSDI selected",
+    "title": "Proof that RSDI/Social Security income ended",
+    "examples": [
+      "SSA notice showing Social Security income ended",
+      "Bank record showing Social Security deposits stopped",
+      "Statement explaining when Social Security income ended"
+    ],
+    "required": true,
+    "recommendationType": "Required",
+    "dtaDataAvailable": "Yes",
+    "dtaDataReliability": "Sometimes — depends on match quality, freshness, and case context\nSVES federal data match",
+    "microcopy": "Send proof showing when RSDI or Social Security income ended, if you have it. DTA may be able to verify this through federal data.",
+    "source": "Recertification",
+    "helpText": "",
+    "notes": "Draft placeholder row for changed unearned income; review/edit content."
+  },
+  {
+    "id": "INC-023",
+    "triggerPath": "income.changedUnearned.unemployment",
+    "eligiblePath": null,
+    "suppressible": true,
+    "dataPath": "income.unemployment.likelyStateMatchAvailable",
+    "icon": "unemployment",
+    "section": "Changed unearned income",
+    "answer": "No longer receiving Unemployment selected",
+    "title": "Proof that unemployment income ended",
+    "examples": [
+      "Unemployment notice showing benefits ended",
+      "DUA payment history showing the last payment",
+      "Bank record showing unemployment deposits stopped"
+    ],
+    "required": true,
+    "recommendationType": "Required",
+    "dtaDataAvailable": "Yes",
+    "dtaDataReliability": "Usually — if unemployment payments are from Massachusetts; out-of-state unemployment may still need client proof.",
+    "microcopy": "Send proof showing when unemployment income ended, if you have it. DTA may be able to verify Massachusetts unemployment through state data.",
+    "source": "Recertification",
+    "helpText": "",
+    "notes": "Draft placeholder row for changed unearned income; review/edit content."
+  },
+  {
+    "id": "INC-024",
+    "triggerPath": "income.changedUnearned.childSupportReceived",
+    "eligiblePath": null,
+    "suppressible": true,
+    "dataPath": "income.childSupportReceived.likelyRAPIDAvailable",
+    "icon": "childSupport",
+    "section": "Changed unearned income",
+    "answer": "No longer receiving Child support selected",
+    "title": "Proof that child support income ended",
+    "examples": [
+      "Court or child support agency record showing payments ended",
+      "Payment history showing the last payment received",
+      "Statement explaining when child support ended"
+    ],
+    "required": true,
+    "recommendationType": "Required",
+    "dtaDataAvailable": "Yes",
+    "dtaDataReliability": "Sometimes — depends on whether child support is formal and court ordered, or if support is informal.",
+    "microcopy": "Send proof showing when child support income ended, if you have it.",
+    "source": "Recertification",
+    "helpText": "",
+    "notes": "Draft placeholder row for changed unearned income; user plans to supply final text."
+  },
+  {
+    "id": "INC-025",
+    "triggerPath": "income.changedUnearned.pension",
+    "eligiblePath": null,
+    "suppressible": false,
+    "dataPath": null,
+    "icon": "pension",
+    "section": "Changed unearned income",
+    "answer": "No longer receiving Pension selected",
+    "title": "Proof that pension income ended",
+    "examples": [
+      "Pension notice or letter showing benefits ended",
+      "Payment history showing the last pension payment",
+      "Bank record showing pension deposits stopped"
+    ],
+    "required": true,
+    "recommendationType": "Required",
+    "dtaDataAvailable": "Sometimes",
+    "dtaDataReliability": "Sometimes — may be available through data sources, but clients may still need to provide proof.",
+    "microcopy": "Send proof showing when pension income ended.",
+    "source": "Recertification",
+    "helpText": "",
+    "notes": "Draft placeholder row for changed unearned income; user plans to supply final text."
+  },
+  {
+    "id": "INC-026",
+    "triggerPath": "income.changedUnearned.veteransBenefits",
+    "eligiblePath": null,
+    "suppressible": false,
+    "dataPath": null,
+    "icon": "veterans",
+    "section": "Changed unearned income",
+    "answer": "No longer receiving Veterans benefits selected",
+    "title": "Proof that veterans benefits ended",
+    "examples": [
+      "VA notice or letter showing benefits ended",
+      "Payment history showing the last payment",
+      "Bank record showing veterans benefit deposits stopped"
+    ],
+    "required": true,
+    "recommendationType": "Required",
+    "dtaDataAvailable": "No",
+    "dtaDataReliability": "",
+    "microcopy": "Send proof showing when veterans benefits ended.",
+    "source": "Recertification",
+    "helpText": "",
+    "notes": "Draft placeholder row for changed unearned income; user plans to supply final text."
+  },
+  {
+    "id": "INC-027",
+    "triggerPath": "income.changedUnearned.rentalIncome",
+    "eligiblePath": null,
+    "suppressible": false,
+    "dataPath": null,
+    "icon": "rentalIncome",
+    "section": "Changed unearned income",
+    "answer": "No longer receiving Rental income selected",
+    "title": "Proof that rental income ended",
+    "examples": [
+      "Statement from tenant or roomer/boarder showing payments ended",
+      "Lease or agreement showing rental income ended",
+      "Written statement explaining when rental income ended"
+    ],
+    "required": true,
+    "recommendationType": "Required",
+    "dtaDataAvailable": "No",
+    "dtaDataReliability": "",
+    "microcopy": "Send proof showing when rental income ended.",
+    "source": "Recertification",
+    "helpText": "",
+    "notes": "Draft placeholder row for changed unearned income; user plans to supply final text."
+  },
+  {
+    "id": "INC-028",
+    "triggerPath": "income.changedUnearned.workersComp",
+    "eligiblePath": null,
+    "suppressible": false,
+    "dataPath": null,
+    "icon": "workersComp",
+    "section": "Changed unearned income",
+    "answer": "No longer receiving Workers comp selected",
+    "title": "Proof that workers compensation ended",
+    "examples": [
+      "Workers compensation notice showing the date payments ended",
+      "Payment history showing the last payment",
+      "Bank record showing workers compensation deposits stopped"
+    ],
+    "required": true,
+    "recommendationType": "Required",
+    "dtaDataAvailable": "No",
+    "dtaDataReliability": "",
+    "microcopy": "Send proof showing when workers compensation ended.",
+    "source": "Recertification",
+    "helpText": "",
+    "notes": "Draft placeholder row for changed unearned income; user plans to supply final text."
+  },
+  {
+    "id": "INC-029",
+    "triggerPath": "income.changedUnearned.pfml",
+    "eligiblePath": null,
+    "suppressible": false,
+    "dataPath": null,
+    "icon": "pfml",
+    "section": "Changed unearned income",
+    "answer": "No longer receiving Paid Family and Medical Leave selected",
+    "title": "Proof that paid family and medical leave ended",
+    "examples": [
+      "PFML notice showing the date that benefits ended",
+      "Payment history showing the last payment",
+      "Bank record showing PFML deposits stopped"
+    ],
+    "required": true,
+    "recommendationType": "Required",
+    "dtaDataAvailable": "No",
+    "dtaDataReliability": "",
+    "microcopy": "Send proof showing when paid family and medical leave ended.",
+    "source": "Recertification",
+    "helpText": "",
+    "notes": "Draft placeholder row for changed unearned income; user plans to supply final text."
+  },
+  {
     "id": "WRK-001",
     "triggerPath": "workRules.abawdExemption",
     "eligiblePath": null,
@@ -634,7 +888,7 @@ const VERIFICATION_RULES = [
     "suppressible": false,
     "dataPath": null,
     "icon": "rent",
-    "section": "Housing expenses",
+    "section": "Shelter expenses",
     "answer": "Rent selected",
     "title": "Proof of rent",
     "examples": [
@@ -659,7 +913,7 @@ const VERIFICATION_RULES = [
     "suppressible": false,
     "dataPath": null,
     "icon": "mortgage",
-    "section": "Housing expenses",
+    "section": "Shelter expenses",
     "answer": "Mortgage selected",
     "title": "Proof of mortgage payment",
     "examples": [
@@ -682,7 +936,7 @@ const VERIFICATION_RULES = [
     "suppressible": false,
     "dataPath": null,
     "icon": "mortgage",
-    "section": "Housing expenses",
+    "section": "Shelter expenses",
     "answer": "Property taxes selected",
     "title": "Proof of property taxes",
     "examples": [
@@ -705,7 +959,7 @@ const VERIFICATION_RULES = [
     "suppressible": false,
     "dataPath": null,
     "icon": "mortgage",
-    "section": "Housing expenses",
+    "section": "Shelter expenses",
     "answer": "Home insurance selected",
     "title": "Proof of home insurance",
     "examples": [
@@ -728,7 +982,7 @@ const VERIFICATION_RULES = [
     "suppressible": false,
     "dataPath": null,
     "icon": "mortgage",
-    "section": "Housing expenses",
+    "section": "Shelter expenses",
     "answer": "Condo fees selected",
     "title": "Proof of condo fees",
     "examples": [
@@ -869,7 +1123,7 @@ const VERIFICATION_RULES = [
     "dataPath": null,
     "icon": "dependentCare",
     "section": "Dependent care expenses",
-    "answer": "Dependent care selected",
+    "answer": "Dependent care (general expenses) selected",
     "title": "Proof of dependent care costs",
     "examples": [
       "Statement or letter from the child or adult care provider showing the amount that you are responsible for",
@@ -886,21 +1140,23 @@ const VERIFICATION_RULES = [
   {
     "id": "EXP-012",
     "triggerPath": "expenses.dependentCare.driveToProvider",
+    "triggerAnyPaths": [
+      "expenses.dependentCare.driveToProvider",
+      "expenses.dependentCare.paidTransportation"
+    ],
     "eligiblePath": null,
     "suppressible": false,
     "dataPath": null,
-    "icon": "dependentCare",
+    "icon": "car",
     "section": "Dependent care expenses",
-    "answer": "Drive dependent to and/or from the provider selected Yes",
-    "title": "Proof of transportation to dependent care",
-    "examples": [
-      "Statement or self-declaration stating the address of the provider and how often you drive to and from this provider"
-    ],
+    "answer": "Drive dependent to/from care provider or pay for transportation for dependent care selected",
+    "title": "Proof of transportation costs to dependent care",
+    "examples": [],
     "required": false,
     "recommendationType": "Optional, but may increase benefits",
     "dtaDataAvailable": "No",
     "dtaDataReliability": "",
-    "microcopy": "If you drive: Send a signed statement with provider address and how many times per week or month you drive there",
+    "microcopy": "If you drive: Send a signed statement with the care provider address and how often you drive there\n\nIf you pay for parking or tolls or use transportation: Receipts from the transportation company (e.g., Lyft, Uber)\n- Receipts for public transportation (e.g., bus, subway, taxi, The RIDE)\n- Receipts for parking or tolls\n\nMake sure to note the frequency of the trips (writing on the receipt is ok)",
     "source": "All",
     "helpText": "",
     "details": {
@@ -910,45 +1166,26 @@ const VERIFICATION_RULES = [
     }
   },
   {
-    "id": "EXP-015",
-    "triggerPath": "expenses.dependentCare.paidTransportation",
-    "eligiblePath": null,
-    "suppressible": false,
-    "dataPath": null,
-    "icon": "dependentCare",
-    "section": "Dependent care expenses",
-    "answer": "Pay for transportation for dependent selected Yes",
-    "title": "Proof of other transportation costs",
-    "examples": [],
-    "required": false,
-    "recommendationType": "Optional, but may increase benefits",
-    "dtaDataAvailable": "No",
-    "dtaDataReliability": "",
-    "microcopy": "If you pay for parking or tolls or use a transportation service: Receipts from the transportation company (e.g., Lyft, Uber)\n- Receipts for public transportation (e.g., bus, subway, taxi, The RIDE)\n- Receipts for parking or tolls\n\nMake sure to note the frequency of the trips (writing on the receipt is ok)",
-    "source": "All",
-    "helpText": ""
-  },
-  {
     "id": "EXP-013",
     "triggerPath": "expenses.childSupportPaid.reported",
     "eligiblePath": null,
     "suppressible": false,
     "dataPath": null,
     "icon": "childSupport",
-    "section": "Child support expenses",
+    "section": "Dependent care expenses",
     "answer": "Child support paid selected",
     "title": "Proof of child support you pay",
     "examples": [
-      "Court order",
-      "Payment history",
-      "Wage withholding record",
+      "Court order (if child support is court ordered)",
+      "Payment history or cancelled checks",
+      "Wage records showing child support withholding",
       "Receipts for child support payments"
     ],
     "required": false,
     "recommendationType": "Optional, but may increase benefits",
     "dtaDataAvailable": "No",
     "dtaDataReliability": "",
-    "microcopy": "If someone in your household pays court-ordered child support to someone outside the home, send proof.",
+    "microcopy": "If someone in your household pays child support to someone outside the home, send proof of the court order (if there is one) and the last 90 days of payment history.",
     "source": "All",
     "helpText": ""
   },
@@ -958,22 +1195,25 @@ const VERIFICATION_RULES = [
     "eligiblePath": null,
     "suppressible": false,
     "dataPath": null,
-    "icon": "medical",
+    "icon": "medicalPair",
     "section": "Medical expenses",
-    "answer": "Medical costs selected (health insurance or other medical costs including prescriptions, transportation, over the counter medications, dental or eye care, adult diapers, etc?)  ",
+    "answer": "Medical expenses (general) selected",
     "title": "Proof of medical expenses",
     "examples": [
       {
         "text": "Bills or receipts for medical costs not covered by MassHealth or other insurance, such as:",
         "children": [
-          "health insurance co-pays and premiums",
           "one-time medical bills",
           "prescription medication",
           "over-the-counter medical items",
           "dental care or dentures",
           "eyeglasses",
           "hearing aid batteries",
-          "Payments for home health aides or other care you need"
+          "Payments for home health aides or other care you need",
+          {
+            "text": "For more medical expenses examples click here",
+            "href": "https://www.mass.gov/guides/examples-of-medical-costs"
+          }
         ]
       }
     ],
@@ -991,7 +1231,7 @@ const VERIFICATION_RULES = [
     "eligiblePath": null,
     "suppressible": false,
     "dataPath": null,
-    "icon": "medical",
+    "icon": "car",
     "section": "Medical expenses",
     "answer": "Drive to medical appointments or the pharmacy selected",
     "title": "Proof of transportation costs to medical appointments",
@@ -1015,10 +1255,10 @@ const VERIFICATION_RULES = [
     "eligiblePath": null,
     "suppressible": false,
     "dataPath": null,
-    "icon": "medical",
+    "icon": "medicalPair",
     "section": "Medical expenses",
-    "answer": "Medical expenses related to health insurance added/entered",
-    "title": "Proof of health-insurance-related medical expenses",
+    "answer": "Health insurance expenses selected",
+    "title": "Proof of health insurance expenses",
     "examples": [
       "Copay receipts",
       "Explanation of benefits",
@@ -1026,35 +1266,6 @@ const VERIFICATION_RULES = [
       "Provider bill",
       "Insurer statement",
       "Premium bill"
-    ],
-    "required": false,
-    "recommendationType": "Optional, but may increase benefits",
-    "dtaDataAvailable": "No",
-    "dtaDataReliability": "",
-    "microcopy": "Sending proof of medical costs over $35 a month may increase your SNAP benefit amount. Make sure to note the frequency of the expense. (writing on the receipt is ok)",
-    "source": "Interim report; Recertification",
-    "helpText": ""
-  },
-  {
-    "id": "EXP-018",
-    "triggerPath": "expenses.medical.otherMedical",
-    "eligiblePath": null,
-    "suppressible": false,
-    "dataPath": null,
-    "icon": "medical",
-    "section": "Medical expenses",
-    "answer": "Medical expenses not related to health insurance added/ entered",
-    "title": "Proof of other medical expenses",
-    "examples": [
-      "Bills or receipts for medical costs not covered by MassHealth or other insurance, such as:",
-      "Health insurance co-pays and premiums",
-      "One-time medical bills",
-      "Prescription medication",
-      "Over-the-counter medical items",
-      "Dental care or dentures",
-      "Eyeglasses",
-      "Hearing aid batteries",
-      "Payments for home health aides or other care you need"
     ],
     "required": false,
     "recommendationType": "Optional, but may increase benefits",
@@ -1092,7 +1303,10 @@ function setPathValue(obj, path, value) {
 
 function isTriggered(app, rule) {
   if (rule.id === "ID-001") return true;
-  if (!getPathValue(app, rule.triggerPath)) return false;
+  const hasTrigger = Array.isArray(rule.triggerAnyPaths)
+    ? rule.triggerAnyPaths.some((path) => Boolean(getPathValue(app, path)))
+    : Boolean(getPathValue(app, rule.triggerPath));
+  if (!hasTrigger) return false;
   if (rule.eligiblePath && !getPathValue(app, rule.eligiblePath)) return false;
   if (!passesUtilityPrecedence(app, rule)) return false;
   return true;
@@ -1133,7 +1347,7 @@ export function recommendVerifications(app, settings = DEFAULT_SETTINGS) {
     const item = {
       key: rule.id,
       icon: ICONS[rule.icon] || "Doc",
-      iconName: CARD_ICON_BY_RULE_ID[rule.id] || "doc",
+      iconName: rule.icon || "doc",
       emoji: CARD_EMOJI_BY_RULE_ID[rule.id] || "📝",
       title: rule.title,
       why: rule.microcopy || "Send proof if DTA asks or if you have it ready.",
@@ -1221,12 +1435,12 @@ function runPrototypeTests() {
   fullExpenses.expenses.medical.elderlyOrDisabled = true;
   fullExpenses.expenses.medical.transportation = true;
   fullExpenses.expenses.medical.healthInsuranceRelated = true;
-  fullExpenses.expenses.medical.otherMedical = true;
 
   const fullExpensesResult = recommendVerifications(fullExpenses, { suppressInternalData: true, includeIdentity: false });
-  ["EXP-001", "EXP-002", "EXP-003", "EXP-004", "EXP-005", "EXP-006", "EXP-011", "EXP-012", "EXP-015", "EXP-013", "EXP-014", "EXP-016", "EXP-017", "EXP-018"].forEach((key) => {
+  ["EXP-001", "EXP-002", "EXP-003", "EXP-004", "EXP-005", "EXP-006", "EXP-011", "EXP-012", "EXP-013", "EXP-014", "EXP-016", "EXP-017"].forEach((key) => {
     console.assert(fullExpensesResult.recs.some((rec) => rec.key === key), `Expected ${key} recommendation`);
   });
+  console.assert(!fullExpensesResult.recs.some((rec) => rec.key === "EXP-015"), "Did not expect retired EXP-015 recommendation");
   ["EXP-007", "EXP-008", "EXP-009", "EXP-010"].forEach((key) => {
     console.assert(!fullExpensesResult.recs.some((rec) => rec.key === key), `Did not expect ${key} when heat/cooling utility proof is already recommended`);
   });
@@ -1240,6 +1454,14 @@ function runPrototypeTests() {
   acFeeOnly.expenses.utilities.acFee = true;
   const acFeeOnlyResult = recommendVerifications(acFeeOnly, { suppressInternalData: true, includeIdentity: false });
   console.assert(acFeeOnlyResult.recs.some((rec) => rec.key === "EXP-008"), "Expected EXP-008 when only AC fee is selected");
+
+  const paidDependentTransportationOnly = clone(EMPTY_APPLICATION);
+  paidDependentTransportationOnly.expenses.dependentCare.paidTransportation = true;
+  const paidDependentTransportationOnlyResult = recommendVerifications(paidDependentTransportationOnly, { suppressInternalData: true, includeIdentity: false });
+  console.assert(
+    paidDependentTransportationOnlyResult.recs.some((rec) => rec.key === "EXP-012"),
+    "Expected EXP-012 when paid dependent-care transportation is selected"
+  );
 
   const otherUtilityOnly = clone(EMPTY_APPLICATION);
   otherUtilityOnly.expenses.utilities.electricGas = true;
@@ -1255,100 +1477,58 @@ function runPrototypeTests() {
 runPrototypeTests();
 
 function MayflowerIcon({ name, size = 32, className = "" }) {
-  const strokeProps = {
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 2.4,
-    strokeLinecap: "round",
-    strokeLinejoin: "round"
+  const icons = {
+    identity: IdentificationCard,
+    wages: Money,
+    jobEnd: Briefcase,
+    selfEmployment: Money,
+    statement: FileText,
+    socialSecurity: CreditCard,
+    unemployment: CreditCard,
+    childSupport: UsersThree,
+    pension: CreditCard,
+    veterans: CreditCard,
+    rentalIncome: House,
+    workersComp: CreditCard,
+    workStudy: FileText,
+    pfml: CreditCard,
+    workRules: FileText,
+    rent: House,
+    mortgage: House,
+    utilities: Lightbulb,
+    dependentCare: UsersThree,
+    check: Check,
+    doc: FileText,
+    mail: EnvelopeSimple,
+    phone: Phone,
+    credit: CreditCard,
+    cash: Money,
+    home: House,
+    lightbulb: Lightbulb,
+    family: UsersThree,
+    car: Car,
+    medical: FirstAidKit,
+    warning: Warning,
+    info: Info
   };
 
-  const icons = {
-    check: (
-      <path {...strokeProps} d="M5 17.5 11.5 24 27 8" />
-    ),
-    doc: (
-      <>
-        <path {...strokeProps} d="M9 4h10l6 6v18H9z" />
-        <path {...strokeProps} d="M19 4v7h6" />
-      </>
-    ),
-    mail: (
-      <>
-        <rect {...strokeProps} x="5" y="8" width="22" height="16" />
-        <path {...strokeProps} d="m6 9 10 8 10-8" />
-      </>
-    ),
-    phone: (
-      <path {...strokeProps} d="M11 5 7 9c1 8 8 15 16 16l4-4-5-5-3 3c-3-1-5-3-6-6l3-3z" />
-    ),
-    credit: (
-      <>
-        <rect {...strokeProps} x="5" y="9" width="22" height="15" rx="1" />
-        <path {...strokeProps} d="M5 14h22M9 20h5" />
-      </>
-    ),
-    cash: (
-      <>
-        <rect {...strokeProps} x="4" y="8" width="24" height="16" rx="1" />
-        <circle {...strokeProps} cx="16" cy="16" r="4" />
-        <path {...strokeProps} d="M8 12h1M23 20h1" />
-      </>
-    ),
-    home: (
-      <>
-        <path {...strokeProps} d="M4 15 16 5l12 10" />
-        <path {...strokeProps} d="M7 14v14h18V14" />
-        <path {...strokeProps} d="M13 28v-8h6v8" />
-      </>
-    ),
-    lightbulb: (
-      <>
-        <path {...strokeProps} d="M11 20c-2-2-3-4-3-7a8 8 0 1 1 16 0c0 3-1 5-3 7" />
-        <path {...strokeProps} d="M12 23h8M13 27h6" />
-      </>
-    ),
-    family: (
-      <>
-        <circle {...strokeProps} cx="11" cy="10" r="4" />
-        <circle {...strokeProps} cx="22" cy="12" r="3" />
-        <path {...strokeProps} d="M4 27c1-6 4-9 8-9s7 3 8 9" />
-        <path {...strokeProps} d="M18 27c1-4 3-6 6-6 2 0 4 2 5 6" />
-      </>
-    ),
-    car: (
-      <>
-        <path {...strokeProps} d="M7 21h18l-2-8H9z" />
-        <path {...strokeProps} d="M5 21v-5l3-3M27 21v-5l-3-3" />
-        <circle {...strokeProps} cx="10" cy="23" r="2" />
-        <circle {...strokeProps} cx="22" cy="23" r="2" />
-      </>
-    ),
-    medical: (
-      <>
-        <path {...strokeProps} d="M16 6v20M6 16h20" />
-        <rect {...strokeProps} x="5" y="5" width="22" height="22" rx="3" />
-      </>
-    ),
-    warning: (
-      <>
-        <path {...strokeProps} d="M16 5 29 27H3z" />
-        <path {...strokeProps} d="M16 12v7M16 23h.01" />
-      </>
-    ),
-    info: (
-      <>
-        <circle {...strokeProps} cx="16" cy="16" r="12" />
-        <path {...strokeProps} d="M16 14v8M16 10h.01" />
-      </>
-    )
-  };
+  if (name === "medicalPair") {
+    const pairSize = Math.max(18, Math.round(size * 0.72));
+    return (
+      <span aria-hidden="true" className={`dta-icon ${className}`}>
+        <span className="inline-flex items-center">
+          <Prescription size={pairSize} weight={size <= 24 ? "bold" : "regular"} />
+          <Receipt size={pairSize} weight={size <= 24 ? "bold" : "regular"} className="-ml-2" />
+        </span>
+      </span>
+    );
+  }
+
+  const Icon = icons[name] || FileText;
 
   return (
     <span aria-hidden="true" className={`dta-icon ${className}`}>
-      <svg width={size} height={size} viewBox="0 0 32 32" role="img">
-        {icons[name] || icons.doc}
-      </svg>
+      <Icon size={size} weight={size <= 24 ? "bold" : "regular"} />
     </span>
   );
 }
@@ -1416,6 +1596,14 @@ function InlineExampleContent({ example }) {
       if (typeof segment === "string") return segment;
       return <strong key={`${segment.strong}-${index}`} className="font-bold">{segment.strong}</strong>;
     });
+  }
+
+  if (example.href) {
+    return (
+      <a href={example.href} target="_blank" rel="noreferrer" className="font-semibold text-[#14558f] underline">
+        {example.text}
+      </a>
+    );
   }
 
   return example.text;
@@ -1604,21 +1792,22 @@ function ApplicationEditor({ app, setApp }) {
     <section className="dta-card bg-white p-5 sm:p-6">
       <h2 className="text-xl font-bold text-[#141414]">Prototype inputs</h2>
       <p className="mt-2 text-base leading-relaxed text-slate-700">
-        These checkboxes mirror the DTA Connect SNAP application answers used by the verification mapping spreadsheet.
+        These checkboxes mirror the DTA Connect SNAP recertification answers used by the verification mapping spreadsheet.
       </p>
 
       <div className="mt-4 space-y-4">
-        <InputGroup title="Client's certification type">
-          <ChoiceInput app={app} setApp={setApp} path="certification.type" value="simplified" label="Simplified: client requires interview" />
-          <ChoiceInput app={app} setApp={setApp} path="certification.type" value="edsap" label="EDSAP: client's interview waived" />
-        </InputGroup>
-
-        <InputGroup title="Income and benefit types">
+        <InputGroup title="Earned income">
+          <div className="sm:col-span-2 text-sm font-bold text-slate-700">New earned income</div>
           <ToggleInput app={app} setApp={setApp} path="income.wages.reported" label="Wages" />
-          <ToggleInput app={app} setApp={setApp} path="income.wages.changed" label="Still working but income changed" />
-          <ToggleInput app={app} setApp={setApp} path="income.wages.endedRecently" label="No longer working / job ended" />
           <ToggleInput app={app} setApp={setApp} path="income.selfEmployment.reported" label="Self-employment" />
           <ToggleInput app={app} setApp={setApp} path="income.workStudy.reported" label="Work study" />
+          <div className="sm:col-span-2 mt-2 text-sm font-bold text-slate-700">Changed earned income</div>
+          <ToggleInput app={app} setApp={setApp} path="income.wages.changed" label="Still working but income changed" />
+          <ToggleInput app={app} setApp={setApp} path="income.wages.endedRecently" label="No longer working, income/job ended" />
+        </InputGroup>
+
+        <InputGroup title="Unearned income">
+          <div className="sm:col-span-2 text-sm font-bold text-slate-700">New unearned income</div>
           <ToggleInput app={app} setApp={setApp} path="income.ssi.reported" label="SSI" />
           <ToggleInput app={app} setApp={setApp} path="income.rsdi.reported" label="RSDI" />
           <ToggleInput app={app} setApp={setApp} path="income.unemployment.reported" label="Unemployment" />
@@ -1628,7 +1817,28 @@ function ApplicationEditor({ app, setApp }) {
           <ToggleInput app={app} setApp={setApp} path="income.rentalIncome.reported" label="Rental income" />
           <ToggleInput app={app} setApp={setApp} path="income.workersComp.reported" label="Workers comp" />
           <ToggleInput app={app} setApp={setApp} path="income.pfml.reported" label="Paid family and medical leave" />
+          <div className="sm:col-span-2 mt-2 text-sm font-bold text-slate-700">Changed unearned income</div>
+          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.ssi" label="No longer receiving SSI" />
+          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.rsdi" label="No longer receiving RSDI" />
+          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.unemployment" label="No longer receiving Unemployment" />
+          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.childSupportReceived" label="No longer receiving Child support" />
+          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.pension" label="No longer receiving Pension" />
+          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.veteransBenefits" label="No longer receiving Veterans benefits" />
+          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.rentalIncome" label="No longer receiving Rental income" />
+          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.workersComp" label="No longer receiving Workers comp" />
+          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.pfml" label="No longer receiving Paid Family and Medical Leave" />
+        </InputGroup>
+
+        <InputGroup title="Work rules / ABAWD">
           <ToggleInput app={app} setApp={setApp} path="workRules.abawdExemption" label="ABAWD/work-rule exemption or compliance" />
+        </InputGroup>
+
+        <InputGroup title="Shelter expenses">
+          <ToggleInput app={app} setApp={setApp} path="expenses.rent.reported" label="Rent" />
+          <ToggleInput app={app} setApp={setApp} path="expenses.mortgage.reported" label="Mortgage" />
+          <ToggleInput app={app} setApp={setApp} path="expenses.propertyTaxes.reported" label="Property taxes" />
+          <ToggleInput app={app} setApp={setApp} path="expenses.homeInsurance.reported" label="Home insurance" />
+          <ToggleInput app={app} setApp={setApp} path="expenses.condoFees.reported" label="Condo fees" />
         </InputGroup>
 
         <InputGroup title="Utilities">
@@ -1639,23 +1849,17 @@ function ApplicationEditor({ app, setApp }) {
           <ToggleInput app={app} setApp={setApp} path="expenses.utilities.phone" label="Phone/cell service" />
         </InputGroup>
 
-        <InputGroup title="Housing expenses">
-          <ToggleInput app={app} setApp={setApp} path="expenses.rent.reported" label="Rent" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.mortgage.reported" label="Mortgage" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.propertyTaxes.reported" label="Property taxes" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.homeInsurance.reported" label="Home insurance" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.condoFees.reported" label="Condo fees" />
+        <InputGroup title="Dependent care expenses">
+          <ToggleInput app={app} setApp={setApp} path="expenses.childSupportPaid.reported" label="Child support paid" />
+          <ToggleInput app={app} setApp={setApp} path="expenses.dependentCare.reported" label="Dependent care (general expenses)" />
+          <ToggleInput app={app} setApp={setApp} path="expenses.dependentCare.driveToProvider" label="Drive dependent to/from care provider" />
+          <ToggleInput app={app} setApp={setApp} path="expenses.dependentCare.paidTransportation" label="Pay for transportation for dependent care" />
         </InputGroup>
 
-        <InputGroup title="Dependent care, child support, and medical expenses">
-          <ToggleInput app={app} setApp={setApp} path="expenses.dependentCare.reported" label="Dependent care" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.dependentCare.driveToProvider" label="Drive dependent to/from care provider" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.dependentCare.paidTransportation" label="Pay for transportation for dependent" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.childSupportPaid.reported" label="Child support paid" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.medical.reported" label="Medical costs" />
+        <InputGroup title="Medical expenses">
+          <ToggleInput app={app} setApp={setApp} path="expenses.medical.healthInsuranceRelated" label="Health insurance expenses" />
+          <ToggleInput app={app} setApp={setApp} path="expenses.medical.reported" label="Medical expenses (general)" />
           <ToggleInput app={app} setApp={setApp} path="expenses.medical.transportation" label="Drive to medical appointments or pharmacy" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.medical.healthInsuranceRelated" label="Health-insurance-related medical expenses" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.medical.otherMedical" label="Other medical expenses" />
         </InputGroup>
       </div>
     </section>
@@ -1669,7 +1873,7 @@ function ClientActions() {
         Send documents to DTA
       </button>
       <button type="button" className="dta-button-secondary">
-        I'll upload documents later
+        I'll send documents later
       </button>
     </div>
   );
@@ -1704,7 +1908,7 @@ function SubmittedScreen({ applicationNumber, onReviewProof }) {
           <div>
             <h3 className="max-w-3xl text-2xl font-bold leading-tight text-[#141414]">Submit as much proof as you can now</h3>
             <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#141414]">
-              We'll suggest documents to submit based on your application answers.
+              We'll suggest documents to submit based on your application answers. Sending proof now will help avoid delays.
             </p>
             <button
               type="button"
@@ -1833,34 +2037,17 @@ export default function SnapVerificationPrototype() {
     if (typeof window === "undefined") return false;
     return window.localStorage.getItem("snap-verification-prototype-unlocked") === "true";
   });
-  const [scenarioKey, setScenarioKey] = useState(null);
   const [app, setApp] = useState(clone(EMPTY_APPLICATION));
   const [applicationNumber] = useState(() => String(Math.floor(10000000 + Math.random() * 90000000)));
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [mode, setMode] = useState("client");
   const [clientScreen, setClientScreen] = useState("submitted");
-  const [showScenarioButtons, setShowScenarioButtons] = useState(false);
   const [showPolicyToggles, setShowPolicyToggles] = useState(true);
 
   const result = useMemo(() => recommendVerifications(app, settings), [app, settings]);
-  const certificationType = app.certification?.type || "simplified";
-  const requiresInterview = certificationType !== "edsap";
-  const recommendationIntro = requiresInterview
-    ? "Sending proof before your interview may help you get benefits faster"
-    : "Sending proof now may help you get benefits faster";
+  const recommendationIntro = "Sending proof now will help avoid delays.";
   const requiredRecommendations = result.recs.filter((rec) => rec.required);
   const optionalRecommendations = result.recs.filter((rec) => !rec.required);
-
-  function loadScenario(key) {
-    if (scenarioKey === key) {
-      setScenarioKey(null);
-      setApp(clone(EMPTY_APPLICATION));
-      return;
-    }
-
-    setScenarioKey(key);
-    setApp(clone(SAMPLE_APPLICATIONS[key]));
-  }
 
   if (!unlocked) {
     return <PasswordGate onUnlock={() => setUnlocked(true)} />;
@@ -1872,9 +2059,9 @@ export default function SnapVerificationPrototype() {
         {mode === "logic" ? (
           <header className="mb-6 flex flex-col gap-4 border-b border-[#b7ced6] bg-white p-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h1 className="text-[22px] font-semibold tracking-normal text-[#141414]">DTA Discovery | Verification List Prototype</h1>
+              <h1 className="text-[22px] font-semibold tracking-normal text-[#141414]">DTA Discovery | Recertification Verification List Prototype</h1>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-700">
-                A rules-based prototype that converts SNAP application answers into a personalized and actionable verification recommendation.
+                A rules-based prototype that clarifies what's next for SNAP recertification clients and converts their recertification answers into personalized and actionable proof suggestions.
               </p>
             </div>
 
@@ -1892,32 +2079,6 @@ export default function SnapVerificationPrototype() {
 
         {mode === "logic" ? (
           <>
-            <section className="mb-6 border border-[#b7ced6] bg-white p-4">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <h2 className="text-lg font-semibold text-[#141414]">Sample application answers</h2>
-                  <p className="mt-1 text-sm text-slate-600">Optional scenario shortcuts for demos and future testing scripts.</p>
-                </div>
-                <button type="button" onClick={() => setShowScenarioButtons(!showScenarioButtons)} className="dta-button-secondary px-4 py-2 text-sm">
-                  {showScenarioButtons ? "Hide scenarios" : "Show scenarios"}
-                </button>
-              </div>
-
-              {showScenarioButtons ? (
-                <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                  {Object.entries(SAMPLE_APPLICATIONS).map(([key, scenario]) => {
-                    const selected = scenarioKey === key;
-                    return (
-                      <button type="button" key={key} onClick={() => loadScenario(key)} className={`border p-4 text-left ${selected ? "border-slate-900 bg-slate-100" : "border-slate-300 bg-white"}`}>
-                        <div className="font-bold">{scenario.label}</div>
-                        <div className="mt-1 text-sm text-slate-600">{selected ? "Clear sample answers" : "Load sample application answers"}</div>
-                      </button>
-                    );
-                  })}
-                </div>
-              ) : null}
-            </section>
-
             <div className="mb-6 grid gap-4 lg:grid-cols-3">
               <div className="lg:col-span-2">
                 <ApplicationEditor app={app} setApp={setApp} />
@@ -1927,7 +2088,7 @@ export default function SnapVerificationPrototype() {
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <h2 className="text-lg font-bold text-[#141414]">Policy assumptions</h2>
-                    <p className="mt-1 text-sm text-slate-600">Controls assumptions about what DTA can verify through trusted data before asking clients for documents.</p>
+                    <p className="mt-1 text-sm text-slate-600">Controls what proof DTA can most likely verify through internally-available data sources and does not want to automatically suggest in the verification suggestion list.</p>
                   </div>
                   <button type="button" onClick={() => setShowPolicyToggles(!showPolicyToggles)} className="dta-button-secondary px-4 py-2 text-sm">
                     {showPolicyToggles ? "Hide toggles" : "Show toggles"}
@@ -1937,7 +2098,7 @@ export default function SnapVerificationPrototype() {
                 <div className="mt-4 space-y-3 text-sm">
                   <label className="flex gap-3 border border-[#b7ced6] bg-white p-3">
                     <input type="checkbox" checked={settings.suppressInternalData} onChange={(event) => setSettings({ ...settings, suppressInternalData: event.target.checked })} />
-                    <span>Suppress items below that DTA may verify with internally available data sources</span>
+                    <span>Do not suggest the following proof because DTA likely has this info available through trusted data sources</span>
                   </label>
                 </div>
 
@@ -1946,11 +2107,11 @@ export default function SnapVerificationPrototype() {
                     <h3 className="font-bold text-[#141414]">Internal data suppression toggles</h3>
                     <p className="mt-1 text-sm text-slate-600">Tune the individual data-match assumptions used by the recommendation logic.</p>
                     <div className="mt-4 grid gap-3">
-                      <ToggleInput app={app} setApp={setApp} path="identity.likelyRMVMatch" label="Identity likely available through RMV/DTA data" />
-                      <ToggleInput app={app} setApp={setApp} path="income.ssi.likelySVESAvailable" label="SSI likely available through SVES" />
-                      <ToggleInput app={app} setApp={setApp} path="income.rsdi.likelySVESAvailable" label="RSDI likely available through SVES" />
-                      <ToggleInput app={app} setApp={setApp} path="income.unemployment.likelyStateMatchAvailable" label="Unemployment likely available through state data" />
-                      <ToggleInput app={app} setApp={setApp} path="income.childSupportReceived.likelyRAPIDAvailable" label="Child support likely available through RAPID" />
+                      <ToggleInput app={app} setApp={setApp} path="identity.likelyRMVMatch" label="Identity proof (likely avail through RMV/DTA data)" />
+                      <ToggleInput app={app} setApp={setApp} path="income.ssi.likelySVESAvailable" label="SSI income/ changed income proof (likely avail through SVES)" />
+                      <ToggleInput app={app} setApp={setApp} path="income.rsdi.likelySVESAvailable" label="RSDI income/ changed income proof (likely avail through SVES)" />
+                      <ToggleInput app={app} setApp={setApp} path="income.unemployment.likelyStateMatchAvailable" label="Unemployment income/ changed income proof (likely available if MA UI in state data)" />
+                      <ToggleInput app={app} setApp={setApp} path="income.childSupportReceived.likelyRAPIDAvailable" label="Child support income/ changed income proof (likely available if court ordered in RAPID)" />
                     </div>
                   </div>
                 ) : null}
@@ -1962,7 +2123,6 @@ export default function SnapVerificationPrototype() {
         <div className={`grid gap-6 ${mode === "logic" ? "lg:grid-cols-[1fr_330px]" : ""}`}>
           {mode === "client" && clientScreen === "submitted" ? (
             <SubmittedScreen
-              certificationType={certificationType}
               applicationNumber={applicationNumber}
               onReviewProof={() => setClientScreen("recommendations")}
             />
@@ -1980,7 +2140,10 @@ export default function SnapVerificationPrototype() {
             ) : null}
 
             <h1 className="mt-4 max-w-4xl text-3xl font-bold leading-tight text-[#141414] sm:text-4xl">Submit as much proof as you can now</h1>
-            <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#141414]">{recommendationIntro}</p>
+            <div className="mt-4 max-w-2xl space-y-2 text-lg leading-relaxed text-[#141414]">
+              <p>{recommendationIntro}</p>
+              <p className="text-base">Your recertification due date is [RecertificationDueDate].</p>
+            </div>
             {mode === "client" ? (
               <div className="mt-5 max-w-2xl">
                 <InlineMessage tone="warning" title="DTA may request additional proof">
@@ -2011,8 +2174,12 @@ export default function SnapVerificationPrototype() {
               ) : null}
 
               <div className="dta-card-soft mt-8 p-5">
-                <h3 className="font-bold">Submit as much proof as you can.</h3>
-                <p className="mt-1 text-sm text-slate-700">Do not delay sending proof because you are missing one document.</p>
+                <p className="text-sm leading-relaxed text-slate-700">
+                  Submit as much proof as you can now — it will reduce back and forth during the process and can reduce delays or missed benefits.
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-slate-700">
+                  If you need more time you can come back and submit proof until [YourRecertificationDueDate]
+                </p>
               </div>
               <ClientActions />
             </div>
