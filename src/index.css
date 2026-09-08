@@ -93,8 +93,8 @@ body {
   }
 
   .dta-input-choice {
-    @apply flex cursor-pointer items-center gap-3 bg-white p-4 text-base;
-    border: 1px solid #b7ced6;
+    @apply flex cursor-pointer items-start gap-3 bg-transparent px-0 py-1.5 text-base;
+    border: 0;
   }
 
   .dta-input-choice input {

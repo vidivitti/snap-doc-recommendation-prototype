@@ -1782,7 +1782,7 @@ function InputGroup({ title, children }) {
   return (
     <section className="dta-card bg-white p-4 sm:p-5">
       <h3 className="text-base font-bold text-[#141414]">{title}</h3>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">{children}</div>
+      <div className="mt-3 grid gap-1">{children}</div>
     </section>
   );
 }
@@ -1985,6 +1985,7 @@ function SubmittedScreen({ applicationNumber, onReviewProof }) {
 function PasswordGate({ onUnlock }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   function submitPassword(event) {
     event.preventDefault();
@@ -2009,16 +2010,26 @@ function PasswordGate({ onUnlock }) {
         <form className="mt-6 space-y-4" onSubmit={submitPassword}>
           <label className="block">
             <span className="text-sm font-semibold text-slate-800">Password</span>
-            <input
-              type="password"
-              value={password}
-              onChange={(event) => {
-                setPassword(event.target.value);
-                setError("");
-              }}
-              className="mt-2 w-full border border-slate-400 px-3 py-2 text-base"
-              autoComplete="current-password"
-            />
+            <div className="mt-2 flex w-full items-stretch">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                  setError("");
+                }}
+                className="w-full border border-slate-400 px-3 py-2 text-base"
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                className="border border-l-0 border-slate-400 px-3 text-sm font-semibold text-[#003b5c]"
+                onClick={() => setShowPassword((current) => !current)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
           </label>
 
           {error ? <p className="text-sm text-red-700">{error}</p> : null}
@@ -2040,7 +2051,7 @@ export default function SnapVerificationPrototype() {
   const [app, setApp] = useState(clone(EMPTY_APPLICATION));
   const [applicationNumber] = useState(() => String(Math.floor(10000000 + Math.random() * 90000000)));
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
-  const [mode, setMode] = useState("client");
+  const [mode, setMode] = useState("logic");
   const [clientScreen, setClientScreen] = useState("submitted");
   const [showPolicyToggles, setShowPolicyToggles] = useState(true);
 
@@ -2063,6 +2074,12 @@ export default function SnapVerificationPrototype() {
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-700">
                 A rules-based prototype that clarifies what's next for SNAP recertification clients and converts their recertification answers into personalized and actionable proof suggestions.
               </p>
+              <div className="mt-4 max-w-2xl border-l-4 border-[#79a6b7] bg-[#f5fbfc] p-4">
+                <h2 className="text-base font-bold text-[#141414]">How to use this prototype</h2>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                  Select prototype inputs that correspond to a client's possible DTA Connect recertification responses. Then click the “Client view” button (at the top right) to see the 2 screens that would replace the current submitted screen.
+                </p>
+              </div>
             </div>
 
             <div className="flex gap-2">
