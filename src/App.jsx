@@ -308,7 +308,6 @@ const VERIFICATION_RULES = [
     "answer": "Wages selected",
     "title": "Proof of pay or wages",
     "examples": [
-      { "type": "heading", "text": "Examples of proof of pay or wages" },
       "Recent pay stubs or statements (4 pay stubs if paid weekly, 2 pay stubs if paid biweekly)",
       "Payroll app screenshots (showing your name, the employer name, gross pay, dates, and hours worked)",
       "Employer statement or letter showing any pay you received and the number of hours worked"
@@ -1717,11 +1716,11 @@ function ExamplesDetailsToggle({ title, examples, note }) {
   if (!examples?.length) return null;
 
   return (
-    <details className="mt-3 w-full max-w-[400px] border border-[#b7ced6] bg-[#f5fbfc] p-3">
-      <summary className="cursor-pointer text-sm font-normal underline">
+    <details className="mt-3 w-full">
+      <summary className="cursor-pointer text-sm font-semibold text-[#14558f] underline underline-offset-2 focus:outline-2 focus:outline-offset-2 focus:outline-[#3a7ca5]">
         Examples for {lowerCaseFirstLetter(title)}
       </summary>
-      <div className="mt-3">
+      <div className="mt-2">
         <ExampleList examples={examples} />
         {note ? (
           <p className="mt-3 text-sm leading-relaxed text-slate-700">{note}</p>
