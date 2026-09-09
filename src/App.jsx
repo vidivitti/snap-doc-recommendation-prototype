@@ -1706,6 +1706,26 @@ function DetailsToggle({ details }) {
   );
 }
 
+function lowerCaseFirstLetter(text) {
+  if (!text) return "";
+  return `${text.charAt(0).toLowerCase()}${text.slice(1)}`;
+}
+
+function ExamplesDetailsToggle({ title, examples }) {
+  if (!examples?.length) return null;
+
+  return (
+    <details className="mt-3 w-full max-w-[400px] border border-[#b7ced6] bg-[#f5fbfc] p-3">
+      <summary className="cursor-pointer text-sm font-normal underline">
+        Examples for {lowerCaseFirstLetter(title)}
+      </summary>
+      <div className="mt-3">
+        <ExampleList examples={examples} />
+      </div>
+    </details>
+  );
+}
+
 function RecommendationCard({ rec }) {
   return (
     <div className="dta-card p-5 sm:p-6">
@@ -1722,12 +1742,7 @@ function RecommendationCard({ rec }) {
         <RichText text={rec.why} />
       </div>
 
-      {rec.examples.length > 0 ? (
-        <div className="mt-3">
-          {rec.key !== "INC-003" ? <p className="text-sm font-normal text-slate-800">Examples:</p> : null}
-          <ExampleList examples={rec.examples} />
-        </div>
-      ) : null}
+      <ExamplesDetailsToggle title={rec.title} examples={rec.examples} />
 
       {rec.helperText ? (
         <p className="mt-3 border-l-4 border-[#79a6b7] bg-[#f5fbfc] p-3 text-sm leading-relaxed text-slate-800">
