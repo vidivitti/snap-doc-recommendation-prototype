@@ -308,15 +308,17 @@ const VERIFICATION_RULES = [
     "answer": "Wages selected",
     "title": "Proof of pay or wages",
     "examples": [
-      "Recent pay stubs or statements",
-      "Payroll app screenshot",
-      "Employer statement"
+      { "type": "heading", "text": "Examples of proof of pay or wages" },
+      "Recent pay stubs or statements (4 pay stubs if paid weekly, 2 pay stubs if paid biweekly)",
+      "Payroll app screenshots (showing your name, the employer name, gross pay, dates, and hours worked)",
+      "Employer statement or letter showing any pay you received and the number of hours worked"
     ],
+    "examplesNote": "Note: We do not count earned income for students under 18 who are in school. You do not need to tell us about this income.",
     "required": true,
     "recommendationType": "Required",
     "dtaDataAvailable": "Sometimes",
     "dtaDataReliability": "Sometimes -\nThe Work Number may be able to verify if employer shares data with the service and that data is updated frequently",
-    "microcopy": "We need proof of any pay you got in the last 30 days. DTA may be able to find this in wage records, but it may help you get benefits sooner if you send what you can now.\n\nMake sure your proof shows the **gross income** amount. **Gross income** is the amount before taxes or benefits are taken out.",
+    "microcopy": "We need proof of any pay you got in the last 30 days. DTA may be able to find this in wage records, but it may help you get benefits sooner if you send what you can now.\n\nMake sure your proof shows the **gross income** amount. Gross income is the amount before taxes or benefits are taken out.",
     "source": "All",
     "helpText": ""
   },
@@ -1711,7 +1713,7 @@ function lowerCaseFirstLetter(text) {
   return `${text.charAt(0).toLowerCase()}${text.slice(1)}`;
 }
 
-function ExamplesDetailsToggle({ title, examples }) {
+function ExamplesDetailsToggle({ title, examples, note }) {
   if (!examples?.length) return null;
 
   return (
@@ -1721,6 +1723,9 @@ function ExamplesDetailsToggle({ title, examples }) {
       </summary>
       <div className="mt-3">
         <ExampleList examples={examples} />
+        {note ? (
+          <p className="mt-3 text-sm leading-relaxed text-slate-700">{note}</p>
+        ) : null}
       </div>
     </details>
   );
@@ -1742,7 +1747,7 @@ function RecommendationCard({ rec }) {
         <RichText text={rec.why} />
       </div>
 
-      <ExamplesDetailsToggle title={rec.title} examples={rec.examples} />
+      <ExamplesDetailsToggle title={rec.title} examples={rec.examples} note={rec.examplesNote} />
 
       {rec.helperText ? (
         <p className="mt-3 border-l-4 border-[#79a6b7] bg-[#f5fbfc] p-3 text-sm leading-relaxed text-slate-800">
