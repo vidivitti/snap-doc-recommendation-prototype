@@ -1782,7 +1782,7 @@ function InputGroup({ title, children }) {
   return (
     <section className="dta-card bg-white p-4 sm:p-5">
       <h3 className="text-base font-bold text-[#141414]">{title}</h3>
-      <div className="mt-3 grid gap-1">{children}</div>
+      <div className="dta-input-list mt-3">{children}</div>
     </section>
   );
 }
@@ -2068,7 +2068,7 @@ export default function SnapVerificationPrototype() {
     <main className="dta-page" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
       <div className={mode === "logic" ? "dta-logic-shell" : ""}>
         {mode === "logic" ? (
-          <header className="mb-6 flex flex-col gap-4 border-b border-[#b7ced6] bg-white p-5 sm:flex-row sm:items-end sm:justify-between">
+          <header className="mb-6 flex flex-col gap-4 border-b border-[#b7ced6] bg-white p-5 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <h1 className="text-[22px] font-semibold tracking-normal text-[#141414]">DTA Discovery | Recertification Verification List Prototype</h1>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-700">
@@ -2082,15 +2082,17 @@ export default function SnapVerificationPrototype() {
               </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className="dta-view-toggle shrink-0">
               <button type="button" onClick={() => setMode("client")} className={`dta-tab ${mode === "client" ? "dta-tab-active" : ""}`}>Client view</button>
               <button type="button" onClick={() => setMode("logic")} className={`dta-tab ${mode === "logic" ? "dta-tab-active" : ""}`}>Logic view</button>
             </div>
           </header>
         ) : (
           <div className="dta-top-actions">
-            <button type="button" onClick={() => setMode("client")} className="dta-tab dta-tab-active opacity-80">Client view</button>
-            <button type="button" onClick={() => setMode("logic")} className="dta-tab opacity-80">Logic view</button>
+            <div className="dta-view-toggle">
+              <button type="button" onClick={() => setMode("client")} className="dta-tab dta-tab-active">Client view</button>
+              <button type="button" onClick={() => setMode("logic")} className="dta-tab">Logic view</button>
+            </div>
           </div>
         )}
 

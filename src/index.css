@@ -40,20 +40,37 @@ body {
   }
 
   .dta-top-actions {
-    @apply mx-auto mb-3 flex w-full max-w-[1012px] justify-end gap-2 px-3 sm:px-0;
+    @apply mx-auto mb-3 flex w-full max-w-[1012px] justify-end px-3 sm:px-0;
+  }
+
+  .dta-view-toggle {
+    @apply inline-flex overflow-hidden rounded-md;
+    border: 1px solid #003b5c;
   }
 
   .dta-tab {
-    @apply border px-3 py-2 text-xs font-semibold;
-    border-color: #b7ced6;
+    @apply px-4 py-2 text-sm font-semibold;
+    border: 0;
+    border-right: 1px solid #003b5c;
     color: #003b5c;
     background: #ffffff;
+  }
+
+  .dta-tab:last-child {
+    border-right: 0;
+  }
+
+  .dta-tab:hover {
+    background: #eef7f8;
   }
 
   .dta-tab-active {
     @apply text-white;
     background: #003b5c;
-    border-color: #003b5c;
+  }
+
+  .dta-tab-active:hover {
+    background: #003b5c;
   }
 
   .dta-hero-band {
@@ -95,6 +112,12 @@ body {
   .dta-input-choice {
     @apply flex cursor-pointer items-start gap-3 bg-transparent px-0 py-1.5 text-base;
     border: 0;
+  }
+
+  .dta-input-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
   }
 
   .dta-input-choice input {
