@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import {
   Briefcase,
   Car,
+  CaretDown,
   Check,
   CreditCard,
   EnvelopeSimple,
@@ -1843,10 +1844,12 @@ function DetailsToggle({ details }) {
     <div className="mt-3 w-full max-w-[400px] border border-[#b7ced6] bg-[#f5fbfc] p-3">
       <button
         type="button"
-        className="text-left text-sm font-normal underline"
+        className="flex w-full items-center justify-between gap-3 text-left text-sm font-normal text-[#14558f] underline underline-offset-2"
+        aria-expanded={open}
         onClick={() => setOpen(!open)}
       >
-        {details.label}
+        <span>{details.label}</span>
+        <CaretDown aria-hidden="true" size={18} weight="bold" className={`shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open ? (
@@ -1864,20 +1867,30 @@ function lowerCaseFirstLetter(text) {
 }
 
 function ExamplesDetailsToggle({ title, examples, note }) {
+  const [open, setOpen] = useState(false);
+
   if (!examples?.length) return null;
 
   return (
-    <details className="mt-3 w-full">
-      <summary className="cursor-pointer text-sm font-semibold text-[#14558f] underline underline-offset-2 focus:outline-2 focus:outline-offset-2 focus:outline-[#3a7ca5]">
-        Examples for {lowerCaseFirstLetter(title)}
-      </summary>
+    <div className="mt-3 w-full">
+      <button
+        type="button"
+        className="flex w-fit max-w-full items-center gap-3 border-b-2 border-[#14558f] pb-0.5 text-left text-sm font-medium leading-snug text-[#14558f]"
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+      >
+        <span>Examples for {lowerCaseFirstLetter(title)}</span>
+        <CaretDown aria-hidden="true" size={18} weight="bold" className={`shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open ? (
       <div className="mt-2">
         <ExampleList examples={examples} />
         {note ? (
           <p className="mt-3 text-sm leading-relaxed text-slate-700">{note}</p>
         ) : null}
       </div>
-    </details>
+      ) : null}
+    </div>
   );
 }
 
