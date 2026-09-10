@@ -20,8 +20,6 @@ import {
   Warning
 } from "@phosphor-icons/react";
 
-const PROTOTYPE_PASSWORD = "DTAproof2026";
-
 const ICONS = {
   identity: "ID",
   wages: "Income",
@@ -2173,72 +2171,7 @@ function SubmittedScreen({ applicationNumber, onReviewProof }) {
   );
 }
 
-function PasswordGate({ onUnlock }) {
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-
-  function submitPassword(event) {
-    event.preventDefault();
-
-    if (password === PROTOTYPE_PASSWORD) {
-      window.localStorage.setItem("snap-verification-prototype-unlocked", "true");
-      onUnlock();
-      return;
-    }
-
-    setError("That password did not work. Please try again.");
-  }
-
-  return (
-    <main className="dta-page" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-      <section className="mx-auto mt-16 max-w-md border border-[#b7ced6] bg-white p-6 sm:p-8">
-        <h1 className="text-xl font-semibold text-[#141414]">DTA Discovery | Verification List Prototype</h1>
-        <p className="mt-3 text-sm leading-relaxed text-slate-700">
-          Enter the password to view this prototype.
-        </p>
-
-        <form className="mt-6 space-y-4" onSubmit={submitPassword}>
-          <label className="block">
-            <span className="text-sm font-semibold text-slate-800">Password</span>
-            <div className="mt-2 flex w-full items-stretch">
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(event) => {
-                  setPassword(event.target.value);
-                  setError("");
-                }}
-                className="w-full border border-slate-400 px-3 py-2 text-base"
-                autoComplete="current-password"
-              />
-              <button
-                type="button"
-                className="border border-l-0 border-slate-400 px-3 text-sm font-semibold text-[#003b5c]"
-                onClick={() => setShowPassword((current) => !current)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
-            </div>
-          </label>
-
-          {error ? <p className="text-sm text-red-700">{error}</p> : null}
-
-          <button type="submit" className="dta-button-primary">
-            Continue
-          </button>
-        </form>
-      </section>
-    </main>
-  );
-}
-
 export default function SnapVerificationPrototype() {
-  const [unlocked, setUnlocked] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return window.localStorage.getItem("snap-verification-prototype-unlocked") === "true";
-  });
   const [app, setApp] = useState(clone(EMPTY_APPLICATION));
   const [applicationNumber] = useState(() => String(Math.floor(10000000 + Math.random() * 90000000)));
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
@@ -2252,10 +2185,6 @@ export default function SnapVerificationPrototype() {
   const optionalRecommendations = result.recs.filter((rec) => !rec.required);
   const showSkippedIncomeGuidance = Boolean(app.skippedQuestions?.incomeNoResponse);
   const showSkippedExpensesGuidance = Boolean(app.skippedQuestions?.expensesNoResponse) && !showSkippedIncomeGuidance;
-
-  if (!unlocked) {
-    return <PasswordGate onUnlock={() => setUnlocked(true)} />;
-  }
 
   return (
     <main className="dta-page" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
