@@ -1346,6 +1346,127 @@ const VERIFICATION_RULES = [
   }
 ];
 
+const SKIPPED_EXPENSE_RECOMMENDATIONS = [
+  {
+    key: "SKIP-EXP-001",
+    iconName: "home",
+    title: "Proof of housing costs",
+    why: "If you have shelter or utility costs send us proof. Housing costs may increase SNAP benefit amount.",
+    examplesLabel: "Examples for proof of housing costs",
+    examples: [
+      { type: "heading", text: "If you have shelter expenses:" },
+      "Rent receipt, lease, payment app record, cancelled check showing payment",
+      "Signed statement from your or landlord or roommate (if you sub-let) with what you pay for rent.",
+      "Deed or mortgage statement.",
+      "Shared housing verification form, or statement from someone you live with.",
+      "Property tax bill",
+      "Home insurance statement or policy statement showing the amount you pay",
+      "Proof of condo or HOA fees",
+      { type: "heading", text: "If you have utility costs:" },
+      "Bill for heat, air conditioning, electricity, or gas",
+      "Lease showing you pay for utilities",
+      "Receipt",
+      "Signed and dated letter from landlord or roommate"
+    ]
+  },
+  {
+    key: "SKIP-EXP-002",
+    iconName: "dependentCare",
+    title: "Proof of dependent care costs",
+    why: "If you anyone has child or adult dependent care costs, send us proof. These costs may increase your SNAP benefit amount.",
+    examplesLabel: "Examples of proof of dependent care costs",
+    examples: [
+      { type: "heading", text: "If you have dependent care expenses" },
+      "Statement or letter from the child or adult care provider showing the amount that you are responsible for",
+      "Receipts, canceled check, or money order showing the amount you paid to a provider",
+      {
+        type: "paragraph",
+        segments: [
+          { strong: "If you drive to a care provider:" },
+          " Send a signed statement with the care provider address and how often you drive there"
+        ]
+      },
+      {
+        type: "paragraph",
+        segments: [
+          { strong: "If you pay for parking or tolls or use transportation:" },
+          " Receipts from the transportation company (e.g., Lyft, Uber)"
+        ]
+      },
+      "Receipts for public transportation (e.g., bus, subway, taxi, The RIDE)",
+      "Receipts for parking or tolls",
+      { type: "paragraph", text: "Make sure to note the frequency of the trips (writing on the receipt is ok)" }
+    ],
+    details: {
+      label: "Show me an example of a travel statement for dependent care costs",
+      content: "I, [Your First and Last name] drive to [provider], located at [street address, city, state, zip code] every [frequency].\n\nSigned: [Your name/signature]\n\nDate: [Today's date]",
+      italic: true
+    }
+  },
+  {
+    key: "SKIP-EXP-003",
+    iconName: "medicalPair",
+    title: "Proof medical costs",
+    why: "If anyone is at least age 60 or has a disability, and your household has more than $35 per month in medical expenses, send us proofs of bills, receipts, or statements for medical costs not covered by MassHealth or other insurance. Make sure you note the frequency of the expense (writing on the receipt is ok).",
+    examplesLabel: "Examples of medical cost proof",
+    examples: [
+      { type: "heading", text: "Common health insurance and medical expenses include:" },
+      "Copay receipts",
+      "Explanation of benefits",
+      "Pharmacy printout",
+      "Provider bill",
+      "Insurer statement",
+      "Premium bill",
+      "One-time medical bills",
+      "Prescription medication",
+      "Over-the-counter medical items",
+      "Dental care or dentures",
+      "Eyeglasses",
+      "Hearing aid batteries",
+      "Payments for home health aides or other care you need",
+      {
+        type: "paragraph",
+        segments: [
+          { strong: "If you drive:" },
+          " Send a signed statement with the address of the provider/pharmacy and how often you drive there"
+        ]
+      },
+      {
+        type: "paragraph",
+        segments: [
+          { strong: "If you pay for parking or tolls or use transportation:" }
+        ]
+      },
+      "Receipts for public transportation (e.g., bus, subway, taxi, The RIDE)",
+      "Receipts for parking or tolls",
+      {
+        type: "paragraph",
+        text: "For more medical expenses examples click here",
+        href: "https://www.mass.gov/guides/examples-of-medical-costs"
+      }
+    ],
+    details: {
+      label: "Show me an example of a travel statement for medical costs",
+      content: "I, [Your First and Last name] drive to [provider or pharmacy address], located at [street address, city, state, zip code] every [frequency].\n\nSigned: [Your name/signature]\n\nDate: [Today's date]",
+      italic: true
+    }
+  },
+  {
+    key: "SKIP-EXP-004",
+    iconName: "childSupport",
+    title: "Proof child support costs",
+    why: "If someone in your household pays child support to someone outside the home, send proof of the court order (if there is one) and the last 90 days of payment history.",
+    examplesLabel: "Examples of child support costs",
+    examples: [
+      "Court order (if child support is court ordered)",
+      "Payment history or cancelled checks",
+      "Wage records showing child support withholding",
+      "Receipts for child support payments"
+    ],
+    examplesNote: "NOTE: Child support payments cannot be credited unless they are legally obligated and being paid. If the legal obligation has changed, we need updated verification. We cannot credit child support payments that are for a child who is part of the SNAP household."
+  }
+];
+
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
@@ -1447,6 +1568,17 @@ export function recommendVerifications(app, settings = DEFAULT_SETTINGS) {
 }
 
 function runPrototypeTests() {
+  console.assert(SKIPPED_EXPENSE_RECOMMENDATIONS.length === 4, "Expected four generalized optional-expense recommendations");
+  console.assert(
+    SKIPPED_EXPENSE_RECOMMENDATIONS.map((rec) => rec.title).join("|") ===
+      "Proof of housing costs|Proof of dependent care costs|Proof medical costs|Proof child support costs",
+    "Expected generalized optional-expense recommendation titles in the approved order"
+  );
+  console.assert(
+    SKIPPED_EXPENSE_RECOMMENDATIONS.filter((rec) => rec.details).length === 2,
+    "Expected travel-statement examples for dependent care and medical costs"
+  );
+
   const freelance = recommendVerifications(SAMPLE_APPLICATIONS.freelanceCaregiver, DEFAULT_SETTINGS);
 
   console.assert(freelance.recs.some((rec) => rec.key === "INC-003"), "Expected self-employment recommendation");
@@ -1769,37 +1901,11 @@ function SkippedIncomeGuidance() {
 
 function SkippedExpensesGuidance() {
   return (
-    <InlineMessage tone="info" title="Send verifications if you have expenses you did not report in your recertification">
-      <div className="space-y-4">
-        <section>
-          <p><strong className="font-bold">Housing costs</strong> - If your household address has moved or if you did not report your new housing costs in the online Recertification form, send us:</p>
-          <GuidanceList items={[
-            "A signed statement with what you pay for utilities and shelter expenses.",
-            "Rent receipt, lease or landlord verification form",
-            "Deed or mortgage statement.",
-            "Shared housing verification form, or statement from someone you live with."
-          ]} />
-        </section>
-
-        <section>
-          <p><strong className="font-bold">Dependent care expenses</strong> - If you reported dependent care costs earlier in the form, send us proof. Examples: Receipts, canceled check, money order, or letter from the child or adult care provider showing the amount that you are responsible for.</p>
-          <p className="mt-2">If you drive and provided information in the form (e.g., address of provider, number of trips per week), no further proof is needed.</p>
-          <p className="mt-2">If not driving and you pay for any other transportation costs such as parking or tolls, public transportation (e.g., bus, subway, The RIDE), Lyft/Uber rides, provide receipts of these expenses.</p>
-        </section>
-
-        <section>
-          <p><strong className="font-bold">Medical expenses for household members 60 and over</strong> - If anyone in your house is at least age 60 or has a disability, and your total medical expenses are higher than $190 per month, please send copies of all expenses for DTA to give you credit. Send us copies of all relevant receipts and bills. If you need help getting proof, contact DTA.</p>
-          <p className="mt-2">NOTE: If your total medical expenses are below $190 per month, you do not need to send us any proof of the costs.</p>
-          <p className="mt-2">NOTE: You can be credited for the costs you are responsible for paying even if you are behind or not able to pay them. Medical costs include co-pays, prescriptions, over-the-counter medications, health insurance, medical bills, transportation, and more. Transportation costs for medical reasons can be self-declared.</p>
-        </section>
-
-        <section>
-          <p><strong className="font-bold">Child support expenses</strong> - If anyone in the household is making payments for child support, please send us:</p>
-          <p className="mt-2">Verification of the legal obligation to pay the child support (such as a court order) and proof of recent payments. If you have already submitted proof of legal obligation, you only have to submit proof of payments.</p>
-          <p className="mt-2">NOTE: Child support payments cannot be credited unless they are legally obligated and being paid. If the legal obligation has changed, we need updated verification. We cannot credit child support payments that are for a child who is part of the SNAP household.</p>
-        </section>
-      </div>
-    </InlineMessage>
+    <>
+      {SKIPPED_EXPENSE_RECOMMENDATIONS.map((rec) => (
+        <RecommendationCard key={rec.key} rec={rec} />
+      ))}
+    </>
   );
 }
 
@@ -1861,6 +1967,14 @@ function ExampleList({ examples, nested = false }) {
           return (
             <li key={`${example.text}-${index}`} className="list-none -ml-5 pt-2 font-bold text-slate-800">
               {example.text}
+            </li>
+          );
+        }
+
+        if (example.type === "paragraph") {
+          return (
+            <li key={`${example.text || example.segments?.[0]?.strong}-${index}`} className="list-none -ml-5 pt-2">
+              <InlineExampleContent example={example} />
             </li>
           );
         }
@@ -2080,7 +2194,7 @@ function ApplicationEditor({ app, setApp }) {
             When a client submits a recertification without responding to questions in the following sections, show generalized rules instead
           </p>
           <ToggleInput app={app} setApp={setApp} path="skippedQuestions.incomeNoResponse" label="No response in income section" />
-          <ToggleInput app={app} setApp={setApp} path="skippedQuestions.expensesNoResponse" label="No response in expenses section" />
+          <ToggleInput app={app} setApp={setApp} path="skippedQuestions.expensesNoResponse" label="No response in expenses section/ show general recommendations for optional expenses" />
         </InputGroup>
 
         <InputGroup title="Household member status">
@@ -2395,7 +2509,7 @@ export default function SnapVerificationPrototype() {
             </div>
 
             <div className="space-y-5 px-6 py-8 sm:px-16">
-              {result.recs.length === 0 && !showSkippedIncomeGuidance ? (
+              {result.recs.length === 0 && !showSkippedIncomeGuidance && !showSkippedExpensesGuidance ? (
                 <div className="dta-card bg-white p-4 text-sm text-slate-700">No recommendations yet. Use Logic view to select application answers.</div>
               ) : null}
 
