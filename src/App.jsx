@@ -2180,6 +2180,15 @@ function InputGroup({ title, children }) {
   );
 }
 
+function VerificationSectionDivider({ children }) {
+  return (
+    <div className="flex items-center gap-3 pt-2 text-[#141414]">
+      <h3 className="shrink-0 text-lg font-bold leading-tight">{children}</h3>
+      <span aria-hidden="true" className="h-0.5 flex-1 bg-[#141414]" />
+    </div>
+  );
+}
+
 function ApplicationEditor({ app, setApp }) {
   return (
     <section className="dta-card bg-white p-5 sm:p-6">
@@ -2202,6 +2211,8 @@ function ApplicationEditor({ app, setApp }) {
           <ToggleInput app={app} setApp={setApp} path="household.collegeStudent" label="A household member is a college student" />
           <ToggleInput app={app} setApp={setApp} path="workRules.abawdExemption" label="A household member is ABAWD/must meet work rules" />
         </InputGroup>
+
+        <VerificationSectionDivider>Required verifications</VerificationSectionDivider>
 
         <InputGroup title="Earned income">
           <div className="sm:col-span-2 text-sm font-bold text-slate-700">New earned income</div>
@@ -2235,6 +2246,8 @@ function ApplicationEditor({ app, setApp }) {
           <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.workersComp" label="No longer receiving Workers comp" />
           <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.pfml" label="No longer receiving Paid Family and Medical Leave" />
         </InputGroup>
+
+        <VerificationSectionDivider>Optional verifications</VerificationSectionDivider>
 
         <InputGroup title="Shelter expenses">
           <ToggleInput app={app} setApp={setApp} path="expenses.rent.reported" label="Rent" />
