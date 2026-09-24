@@ -1406,7 +1406,7 @@ const SKIPPED_EXPENSE_RECOMMENDATIONS = [
   {
     key: "SKIP-EXP-003",
     iconName: "medicalPair",
-    title: "Proof medical costs",
+    title: "Proof of medical costs",
     why: "If anyone is at least age 60 or has a disability, and your household has more than $35 per month in medical expenses, send us proofs of bills, receipts, or statements for medical costs not covered by MassHealth or other insurance. Make sure you note the frequency of the expense (writing on the receipt is ok).",
     examplesLabel: "Examples of medical cost proof",
     examples: [
@@ -1454,7 +1454,7 @@ const SKIPPED_EXPENSE_RECOMMENDATIONS = [
   {
     key: "SKIP-EXP-004",
     iconName: "childSupport",
-    title: "Proof child support costs",
+    title: "Proof of child support costs",
     why: "If someone in your household pays child support to someone outside the home, send proof of the court order (if there is one) and the last 90 days of payment history.",
     examplesLabel: "Examples of child support costs",
     examples: [
@@ -1571,7 +1571,7 @@ function runPrototypeTests() {
   console.assert(SKIPPED_EXPENSE_RECOMMENDATIONS.length === 4, "Expected four generalized optional-expense recommendations");
   console.assert(
     SKIPPED_EXPENSE_RECOMMENDATIONS.map((rec) => rec.title).join("|") ===
-      "Proof of housing costs|Proof of dependent care costs|Proof medical costs|Proof child support costs",
+      "Proof of housing costs|Proof of dependent care costs|Proof of medical costs|Proof of child support costs",
     "Expected generalized optional-expense recommendation titles in the approved order"
   );
   console.assert(
