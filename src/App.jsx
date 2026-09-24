@@ -16,6 +16,7 @@ import {
   Phone,
   Prescription,
   Receipt,
+  Student,
   UsersThree,
   Warning
 } from "@phosphor-icons/react";
@@ -41,7 +42,9 @@ const ICONS = {
   utilities: "Utilities",
   dependentCare: "Care",
   medical: "Medical",
-  medicalPair: "Medical + receipt"
+  medicalPair: "Medical + receipt",
+  nonCitizen: "Status",
+  collegeStudent: "Student"
 };
 
 const PHOSPHOR_ICON_NAMES_BY_KEY = {
@@ -66,6 +69,8 @@ const PHOSPHOR_ICON_NAMES_BY_KEY = {
   dependentCare: "UsersThree",
   medical: "FirstAidKit",
   medicalPair: "Prescription + Receipt",
+  nonCitizen: "IdentificationCard",
+  collegeStudent: "Student",
   car: "Car",
   check: "Check",
   doc: "FileText",
@@ -105,6 +110,8 @@ const CARD_EMOJI_BY_RULE_ID = {
   "INC-027": "💵",
   "INC-028": "💵",
   "INC-029": "💵",
+  "HH-001": "🪪",
+  "HH-002": "🎓",
   "WRK-001": "📝",
   "EXP-001": "🏠",
   "EXP-002": "🏠",
@@ -140,7 +147,9 @@ const EMPTY_APPLICATION = {
     memberCount: 1,
     buysAndPreparesTogether: true,
     anyElderlyMember: false,
-    anyFederallyCertifiedDisability: false
+    anyFederallyCertifiedDisability: false,
+    nonCitizenStatusChanged: false,
+    collegeStudent: false
   },
   income: {
     wages: { reported: false, changed: false, endedRecently: false },
@@ -858,14 +867,68 @@ const VERIFICATION_RULES = [
     "notes": "Draft placeholder row for changed unearned income; user plans to supply final text."
   },
   {
+    "id": "HH-001",
+    "triggerPath": "household.nonCitizenStatusChanged",
+    "eligiblePath": null,
+    "suppressible": false,
+    "dataPath": null,
+    "icon": "nonCitizen",
+    "section": "Household member status",
+    "answer": "A household member has non-citizen status or status has changed",
+    "title": "Proof of noncitizen status",
+    "examplesLabel": "Examples of proof of non citizen status",
+    "examples": [
+      "Permanent Resident Card (“green card”)",
+      "Employment Authorization Card",
+      "Temporary Resident Card",
+      "Naturalization Certificate",
+      "Arrival-Departure Record (I-94)",
+      "Stamp in passport",
+      "Other document showing current or pending immigration status"
+    ],
+    "required": true,
+    "recommendationType": "Required",
+    "dtaDataAvailable": "No",
+    "dtaDataReliability": "",
+    "microcopy": "If a household member's noncitizen status has changed, please submit proof of the status.",
+    "source": "Recertification",
+    "helpText": ""
+  },
+  {
+    "id": "HH-002",
+    "triggerPath": "household.collegeStudent",
+    "eligiblePath": null,
+    "suppressible": false,
+    "dataPath": null,
+    "icon": "collegeStudent",
+    "section": "Household member status",
+    "answer": "A household member is a college student",
+    "title": "Proof of college student status",
+    "examplesLabel": "Examples of proof of college student status",
+    "examples": [
+      "If in community college, any document from the school showing you are currently enrolled",
+      "If receiving Mass Grant or participating in work study, Financial Aid Award Letter",
+      "If working (or in work study), proof of gross income (before taxes) for the last four weeks, such as pay stubs",
+      "If in a training program, copy of the letter from program that client attends",
+      "If mentally/physically unfit for work, letter from doctor stating that client is unfit for work"
+    ],
+    "required": true,
+    "recommendationType": "Required",
+    "dtaDataAvailable": "No",
+    "dtaDataReliability": "",
+    "microcopy": "If anyone is a college student, please send us proof of college student enrollment, financial aid, work study award, or training program",
+    "source": "Recertification",
+    "helpText": ""
+  },
+  {
     "id": "WRK-001",
     "triggerPath": "workRules.abawdExemption",
     "eligiblePath": null,
     "suppressible": false,
     "dataPath": null,
     "icon": "workRules",
-    "section": "Work rules / ABAWD",
-    "answer": "ABAWD work-rule exemption (multiple factors)",
+    "section": "Household member status",
+    "answer": "A household member is ABAWD/must meet work rules",
     "title": "Proof of work-rule compliance or exemption",
     "examples": [
       "Work or training schedule",
@@ -1356,6 +1419,7 @@ export function recommendVerifications(app, settings = DEFAULT_SETTINGS) {
       title: rule.title,
       why: rule.microcopy || "Send proof if DTA asks or if you have it ready.",
       examples: rule.examples || [],
+      examplesLabel: rule.examplesLabel,
       helperText: rule.helpText,
       details: rule.details,
       required: rule.required,
@@ -1418,6 +1482,17 @@ function runPrototypeTests() {
   const fullIncomeResult = recommendVerifications(fullIncome, { suppressInternalData: false, includeIdentity: true });
   ["ID-001", "INC-001", "INC-019", "INC-003", "INC-005", "INC-006", "INC-008", "INC-010", "INC-012", "INC-014", "INC-015", "INC-016", "INC-017", "INC-018"].forEach((key) => {
     console.assert(fullIncomeResult.recs.some((rec) => rec.key === key), `Expected ${key} recommendation`);
+  });
+
+  const householdStatus = clone(EMPTY_APPLICATION);
+  householdStatus.household.nonCitizenStatusChanged = true;
+  householdStatus.household.collegeStudent = true;
+  householdStatus.workRules.abawdExemption = true;
+  const householdStatusResult = recommendVerifications(householdStatus, { suppressInternalData: true, includeIdentity: false });
+  ["HH-001", "HH-002", "WRK-001"].forEach((key) => {
+    const recommendation = householdStatusResult.recs.find((rec) => rec.key === key);
+    console.assert(recommendation, `Expected ${key} recommendation`);
+    console.assert(recommendation?.required, `Expected ${key} to be required`);
   });
 
   const fullExpenses = clone(EMPTY_APPLICATION);
@@ -1497,6 +1572,8 @@ function MayflowerIcon({ name, size = 32, className = "" }) {
     workStudy: FileText,
     pfml: CreditCard,
     workRules: FileText,
+    nonCitizen: IdentificationCard,
+    collegeStudent: Student,
     rent: House,
     mortgage: House,
     utilities: Lightbulb,
@@ -1864,7 +1941,7 @@ function lowerCaseFirstLetter(text) {
   return `${text.charAt(0).toLowerCase()}${text.slice(1)}`;
 }
 
-function ExamplesDetailsToggle({ title, examples, note }) {
+function ExamplesDetailsToggle({ title, label, examples, note }) {
   const [open, setOpen] = useState(false);
 
   if (!examples?.length) return null;
@@ -1877,7 +1954,7 @@ function ExamplesDetailsToggle({ title, examples, note }) {
         aria-expanded={open}
         onClick={() => setOpen(!open)}
       >
-        <span>Examples for {lowerCaseFirstLetter(title)}</span>
+        <span>{label || `Examples for ${lowerCaseFirstLetter(title)}`}</span>
         <CaretDown aria-hidden="true" size={18} weight="bold" className={`shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open ? (
@@ -1908,7 +1985,7 @@ function RecommendationCard({ rec }) {
         <RichText text={rec.why} />
       </div>
 
-      <ExamplesDetailsToggle title={rec.title} examples={rec.examples} note={rec.examplesNote} />
+      <ExamplesDetailsToggle title={rec.title} label={rec.examplesLabel} examples={rec.examples} note={rec.examplesNote} />
 
       {rec.helperText ? (
         <p className="mt-3 border-l-4 border-[#79a6b7] bg-[#f5fbfc] p-3 text-sm leading-relaxed text-slate-800">
@@ -1985,6 +2062,12 @@ function ApplicationEditor({ app, setApp }) {
           <ToggleInput app={app} setApp={setApp} path="skippedQuestions.expensesNoResponse" label="No response in expenses section" />
         </InputGroup>
 
+        <InputGroup title="Household member status">
+          <ToggleInput app={app} setApp={setApp} path="household.nonCitizenStatusChanged" label="A household member has non-citizen status or status has changed" />
+          <ToggleInput app={app} setApp={setApp} path="household.collegeStudent" label="A household member is a college student" />
+          <ToggleInput app={app} setApp={setApp} path="workRules.abawdExemption" label="A household member is ABAWD/must meet work rules" />
+        </InputGroup>
+
         <InputGroup title="Earned income">
           <div className="sm:col-span-2 text-sm font-bold text-slate-700">New earned income</div>
           <ToggleInput app={app} setApp={setApp} path="income.wages.reported" label="Wages" />
@@ -2016,10 +2099,6 @@ function ApplicationEditor({ app, setApp }) {
           <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.rentalIncome" label="No longer receiving Rental income" />
           <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.workersComp" label="No longer receiving Workers comp" />
           <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.pfml" label="No longer receiving Paid Family and Medical Leave" />
-        </InputGroup>
-
-        <InputGroup title="Work rules / ABAWD">
-          <ToggleInput app={app} setApp={setApp} path="workRules.abawdExemption" label="ABAWD/work-rule exemption or compliance" />
         </InputGroup>
 
         <InputGroup title="Shelter expenses">
