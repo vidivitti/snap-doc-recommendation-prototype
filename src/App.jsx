@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import {
+  Baby,
   Briefcase,
   Car,
   CaretDown,
@@ -40,7 +41,7 @@ const ICONS = {
   rent: "Shelter",
   mortgage: "Shelter",
   utilities: "Utilities",
-  dependentCare: "Care",
+  dependentCare: "Dependent care",
   medical: "Medical",
   medicalPair: "Medical + receipt",
   nonCitizen: "Status",
@@ -66,7 +67,7 @@ const PHOSPHOR_ICON_NAMES_BY_KEY = {
   rent: "House",
   mortgage: "House",
   utilities: "Lightbulb",
-  dependentCare: "UsersThree",
+  dependentCare: "Baby",
   medical: "FirstAidKit",
   medicalPair: "Prescription + Receipt",
   nonCitizen: "IdentificationCard",
@@ -329,7 +330,7 @@ const VERIFICATION_RULES = [
     "recommendationType": "Required",
     "dtaDataAvailable": "Sometimes",
     "dtaDataReliability": "Sometimes -\nThe Work Number may be able to verify if employer shares data with the service and that data is updated frequently",
-    "microcopy": "We need proof of any pay you got in the last 30 days. DTA may be able to find this in wage records, but it may help you get benefits sooner if you send what you can now.\n\nMake sure your proof shows the **gross income** amount. Gross income is the amount before taxes or benefits are taken out.",
+    "microcopy": "We need proof of any pay you got in the last 4 weeks. DTA may be able to find this in wage records, but it may help you get benefits sooner if you send what you can now.\n\nMake sure your proof shows the **gross income** amount. Gross income is the amount before taxes or benefits are taken out.",
     "source": "All",
     "helpText": ""
   },
@@ -392,6 +393,7 @@ const VERIFICATION_RULES = [
     "section": "Income & benefits",
     "answer": "Self-employment selected",
     "title": "Proof of self-employment income",
+    "examplesInline": true,
     "examples": [
       { "type": "heading", "text": "If you filed taxes as self-employed:" },
       "Schedule C from your 1040 IRS form",
@@ -400,7 +402,7 @@ const VERIFICATION_RULES = [
       {
         "segments": [
           "Business records or statements that show income and business-related expenses from the ",
-          { "strong": "past 90 days" }
+          { "strong": "past 3 months" }
         ]
       },
       "Invoices or contracts",
@@ -1419,6 +1421,7 @@ export function recommendVerifications(app, settings = DEFAULT_SETTINGS) {
       title: rule.title,
       why: rule.microcopy || "Send proof if DTA asks or if you have it ready.",
       examples: rule.examples || [],
+      examplesInline: Boolean(rule.examplesInline),
       examplesLabel: rule.examplesLabel,
       helperText: rule.helpText,
       details: rule.details,
@@ -1483,6 +1486,15 @@ function runPrototypeTests() {
   ["ID-001", "INC-001", "INC-019", "INC-003", "INC-005", "INC-006", "INC-008", "INC-010", "INC-012", "INC-014", "INC-015", "INC-016", "INC-017", "INC-018"].forEach((key) => {
     console.assert(fullIncomeResult.recs.some((rec) => rec.key === key), `Expected ${key} recommendation`);
   });
+  const wageRecommendation = fullIncomeResult.recs.find((rec) => rec.key === "INC-001");
+  console.assert(wageRecommendation?.why.includes("last 4 weeks"), "Expected wage recommendation to request the last 4 weeks");
+  console.assert(!wageRecommendation?.why.includes("last 30 days"), "Did not expect the retired 30-day wage timeframe");
+  const selfEmploymentRecommendation = fullIncomeResult.recs.find((rec) => rec.key === "INC-003");
+  console.assert(selfEmploymentRecommendation?.examplesInline, "Expected self-employment examples to display inline");
+  console.assert(
+    JSON.stringify(selfEmploymentRecommendation?.examples).includes("past 3 months"),
+    "Expected the self-employment recommendation to use a 3-month timeframe"
+  );
 
   const householdStatus = clone(EMPTY_APPLICATION);
   householdStatus.household.nonCitizenStatusChanged = true;
@@ -1577,7 +1589,7 @@ function MayflowerIcon({ name, size = 32, className = "" }) {
     rent: House,
     mortgage: House,
     utilities: Lightbulb,
-    dependentCare: UsersThree,
+    dependentCare: Baby,
     check: Check,
     doc: FileText,
     mail: EnvelopeSimple,
@@ -1985,7 +1997,16 @@ function RecommendationCard({ rec }) {
         <RichText text={rec.why} />
       </div>
 
-      <ExamplesDetailsToggle title={rec.title} label={rec.examplesLabel} examples={rec.examples} note={rec.examplesNote} />
+      {rec.examplesInline ? (
+        <div className="mt-3">
+          <ExampleList examples={rec.examples} />
+          {rec.examplesNote ? (
+            <p className="mt-3 text-sm leading-relaxed text-slate-700">{rec.examplesNote}</p>
+          ) : null}
+        </div>
+      ) : (
+        <ExamplesDetailsToggle title={rec.title} label={rec.examplesLabel} examples={rec.examples} note={rec.examplesNote} />
+      )}
 
       {rec.helperText ? (
         <p className="mt-3 border-l-4 border-[#79a6b7] bg-[#f5fbfc] p-3 text-sm leading-relaxed text-slate-800">
