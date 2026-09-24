@@ -2361,7 +2361,7 @@ export default function SnapVerificationPrototype() {
   const requiredRecommendations = result.recs.filter((rec) => rec.required);
   const optionalRecommendations = result.recs.filter((rec) => !rec.required);
   const showSkippedIncomeGuidance = Boolean(app.skippedQuestions?.incomeNoResponse);
-  const showSkippedExpensesGuidance = Boolean(app.skippedQuestions?.expensesNoResponse) && !showSkippedIncomeGuidance;
+  const showSkippedExpensesGuidance = Boolean(app.skippedQuestions?.expensesNoResponse);
 
   return (
     <main className="dta-page" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
@@ -2478,28 +2478,24 @@ export default function SnapVerificationPrototype() {
 
               {showSkippedIncomeGuidance ? (
                 <SkippedIncomeGuidance />
-              ) : (
-                <>
-                  {requiredRecommendations.length > 0 ? (
-                    <RecommendationSection label="Required to decide if you still qualify">
-                      {requiredRecommendations.map((rec, index) => <RecommendationCard key={rec.key} rec={rec} index={index} />)}
-                    </RecommendationSection>
-                  ) : null}
+              ) : requiredRecommendations.length > 0 ? (
+                <RecommendationSection label="Required to decide if you still qualify">
+                  {requiredRecommendations.map((rec, index) => <RecommendationCard key={rec.key} rec={rec} index={index} />)}
+                </RecommendationSection>
+              ) : null}
 
-                  {optionalRecommendations.length > 0 || showSkippedExpensesGuidance ? (
-                    <RecommendationSection label="Optional to get a higher benefit amount">
-                      <InlineMessage tone="info" title="New rules">
-                        SNAP households now have to submit proof to get expense deductions. Sending proof of costs and expenses can increase SNAP benefits, but are not required to qualify for SNAP
-                      </InlineMessage>
-                      {showSkippedExpensesGuidance ? (
-                        <SkippedExpensesGuidance />
-                      ) : (
-                        optionalRecommendations.map((rec, index) => <RecommendationCard key={rec.key} rec={rec} index={index} />)
-                      )}
-                    </RecommendationSection>
-                  ) : null}
-                </>
-              )}
+              {showSkippedExpensesGuidance || (!showSkippedIncomeGuidance && optionalRecommendations.length > 0) ? (
+                <RecommendationSection label="Optional to get a higher benefit amount">
+                  <InlineMessage tone="info" title="New rules">
+                    SNAP households now have to submit proof to get expense deductions. Sending proof of costs and expenses can increase SNAP benefits, but are not required to qualify for SNAP
+                  </InlineMessage>
+                  {showSkippedExpensesGuidance ? (
+                    <SkippedExpensesGuidance />
+                  ) : (
+                    optionalRecommendations.map((rec, index) => <RecommendationCard key={rec.key} rec={rec} index={index} />)
+                  )}
+                </RecommendationSection>
+              ) : null}
 
               <div className="dta-card-soft mt-8 p-5">
                 <p className="text-sm leading-relaxed text-slate-700">
