@@ -1346,6 +1346,35 @@ const VERIFICATION_RULES = [
   }
 ];
 
+const SKIPPED_INCOME_RECOMMENDATIONS = [
+  {
+    key: "SKIP-INC-001",
+    iconName: "wages",
+    title: "Proof of earned income or self employment",
+    why: "If anyone in household has earned income or self-employment (including gig work), send us proof of of any pay your household got in the last four weeks. DTA may be able to find this in wage records, but it may help avoid delays if you send what you can now.\n\nMake sure the proof shows the **gross income** amount. Gross income is the amount before taxes or benefits are taken out.\n\nNOTE: We do not count earned income for students under 18 who are in school. You do not need to tell us about this income.",
+    examplesLabel: "Examples of proof of earned income or self employment",
+    examples: [
+      "Pay stubs (four pay stubs if paid weekly, two pay stubs if paid biweekly)",
+      "Letter indicating any pay you received and the number of hours worked",
+      "If self-employed (including gig work), business documents such as a Schedule C (1040 IRS form), 1099 IRS form, or other records that show income and/or business costs"
+    ],
+    required: true
+  },
+  {
+    key: "SKIP-INC-002",
+    iconName: "socialSecurity",
+    title: "Proof of unearned income",
+    why: "If anyone in household has unearned income, send us proof of the monthly amount, such as:",
+    examples: [
+      "Benefit or award letter",
+      "Statement from person, agency, or organization making payments"
+    ],
+    examplesInline: true,
+    examplesNote: "NOTE: We can usually verify the amount of Social Security, SSI, Child Support you get through DOR, or MA Unemployment Compensation ourselves. We will tell you if you need to verify any of these items.",
+    required: true
+  }
+];
+
 const SKIPPED_EXPENSE_RECOMMENDATIONS = [
   {
     key: "SKIP-EXP-001",
@@ -1568,6 +1597,15 @@ export function recommendVerifications(app, settings = DEFAULT_SETTINGS) {
 }
 
 function runPrototypeTests() {
+  console.assert(SKIPPED_INCOME_RECOMMENDATIONS.length === 2, "Expected two generalized required-income recommendations");
+  console.assert(
+    SKIPPED_INCOME_RECOMMENDATIONS[0].examplesLabel === "Examples of proof of earned income or self employment",
+    "Expected earned-income examples to use a reveal toggle"
+  );
+  console.assert(
+    SKIPPED_INCOME_RECOMMENDATIONS[1].examplesInline,
+    "Expected unearned-income examples to remain immediately visible"
+  );
   console.assert(SKIPPED_EXPENSE_RECOMMENDATIONS.length === 4, "Expected four generalized optional-expense recommendations");
   console.assert(
     SKIPPED_EXPENSE_RECOMMENDATIONS.map((rec) => rec.title).join("|") ===
@@ -1766,6 +1804,12 @@ function InlineMessage({ tone = "info", title, children }) {
       borderClass: "border-[#d0d0d0]",
       bgClass: "bg-white"
     },
+    caution: {
+      icon: "warning",
+      iconClass: "text-[#8a6500]",
+      borderClass: "border-[#f6c51b]",
+      bgClass: "bg-[#fffbea]"
+    },
     info: {
       icon: "info",
       iconClass: "text-[#145f9f]",
@@ -1792,110 +1836,16 @@ function InlineMessage({ tone = "info", title, children }) {
   );
 }
 
-function GuidanceList({ items }) {
-  return (
-    <ul className="mt-2 list-disc space-y-1 pl-5">
-      {items.map((item) => (
-        <li key={item}>{item}</li>
-      ))}
-    </ul>
-  );
-}
-
 function SkippedIncomeGuidance() {
   return (
-    <InlineMessage tone="info" title="You may need to send verifications to complete your Recertification">
-      <div className="space-y-4">
-        <p>You must send in any mandatory verifications we request to complete your Recertification. Failure to comply may result in delay or denial of benefits.</p>
-
-        <section>
-          <p><strong className="font-bold">If anyone in household has earned income,</strong> send us proof of income for the last four weeks, such as:</p>
-          <GuidanceList items={[
-            "Pay stubs (four pay stubs if paid weekly, two pay stubs if paid biweekly)",
-            "Letter indicating any pay you received and the number of hours worked",
-            "If self-employed (including gig work), business documents such as a Schedule C (1040 IRS form), 1099 IRS form, or other records that show income and/or business costs"
-          ]} />
-        </section>
-
-        <p><strong className="font-bold">NOTE:</strong> We do not count earned income for students under 18 who are in school. You do not need to tell us about this income.</p>
-
-        <section>
-          <p><strong className="font-bold">If anyone in household has unearned income,</strong> send us proof of the monthly amount, such as:</p>
-          <GuidanceList items={[
-            "Benefit or award letter",
-            "Statement from person, agency, or organization making payments"
-          ]} />
-        </section>
-
-        <p><strong className="font-bold">NOTE:</strong> We can usually verify the amount of Social Security, SSI, Child Support you get through DOR, or MA Unemployment Compensation ourselves. We will tell you if you need to verify any of these items.</p>
-
-        <section>
-          <p><strong className="font-bold">If your household address moved and/or you reported housing costs earlier in the form,</strong> send us proof. Examples:</p>
-          <GuidanceList items={[
-            "Rent receipt, lease, letter from your landlord, mortgage statement, property tax, condo fees, home insurance bill, or other document showing the exact amount you are supposed to pay",
-            "If you are not the primary tenant or the homeowner, provide a statement from the person you live with stating what your share of the shelter and utility expenses are."
-          ]} />
-        </section>
-
-        <section>
-          <p><strong className="font-bold">If your household address moved and/or you reported utility costs earlier in the form,</strong> send us proof. Examples:</p>
-          <GuidanceList items={[
-            "Bill for heat, air conditioning, electricity, gas or phone",
-            "Bill for other utility costs such as coal, wood for heating, garbage collection, water and sewer",
-            "Lease, letter from landlord or roommate showing you pay for utilities"
-          ]} />
-        </section>
-
-        <section>
-          <p><strong className="font-bold">If a household member's noncitizen status has changed,</strong> please submit proof of the status, such as:</p>
-          <GuidanceList items={[
-            "Permanent Resident Card (“green card”)",
-            "Employment Authorization Card",
-            "Temporary Resident Card",
-            "Naturalization Certificate",
-            "Arrival-Departure Record (I-94)",
-            "Stamp in passport",
-            "Other document showing current or pending immigration status"
-          ]} />
-        </section>
-
-        <section>
-          <p><strong className="font-bold">If anyone is a college student,</strong> please, send us:</p>
-          <GuidanceList items={[
-            "If in community college, any document from the school showing you are currently enrolled",
-            "If receiving Mass Grant or participating in work study, Financial Aid Award Letter",
-            "If working (or in work study), proof of gross income (before taxes) for the last four weeks, such as pay stubs",
-            "If in a training program, copy of the letter from program that client attends",
-            "If mentally/physically unfit for work, letter from doctor stating that client is unfit for work"
-          ]} />
-        </section>
-
-        <section>
-          <p><strong className="font-bold">If you reported dependent care costs earlier in the form,</strong> send us proof. Examples:</p>
-          <GuidanceList items={[
-            "Receipts, canceled check, money order, or letter from the child or adult care provider showing the amount that you are responsible for.",
-            "If you drive and provided information in the form (e.g., address of provider, number of trips per week), no further proof is needed.",
-            "If not driving and you pay for any other transportation costs such as parking or tolls, public transportation (e.g., bus, subway, The RIDE), Lyft/Uber rides, provide receipts of these expenses."
-          ]} />
-        </section>
-
-        <section>
-          <p><strong className="font-bold">If anyone is at least age 60 or has a disability, and your household has more than $35 per month in medical expenses,</strong> send us proofs of bills or receipts for medical costs not covered by MassHealth or other insurance, such as:</p>
-          <GuidanceList items={[
-            "Health insurance co-pays and premiums, medical bills, prescription medication, over-to-the counter medical items, dental care or dentures, eyeglasses, hearing aid batteries, etc.",
-            "If you drive and provided information in the form (e.g., address of provider, number of trips per week), no further proof is needed.",
-            "If not driving and you pay for any other transportation costs such as parking or tolls, public transportation (e.g., bus, subway, The RIDE), Lyft/Uber rides, please provide receipts of these expenses."
-          ]} />
-        </section>
-
-        <section>
-          <p><strong className="font-bold">If anyone in the household is making payments for child support,</strong> please send us:</p>
-          <p className="mt-2">Verification of the legal obligation to pay the child support (such as a court order) and proof of recent payments. If you have already submitted proof of legal obligation, you only have to submit proof of payments.</p>
-        </section>
-
-        <p><strong className="font-bold">NOTE:</strong> Child support payments cannot be credited unless they are legally obligated and being paid. If the legal obligation has changed, we need updated verification. We cannot credit child support payments that are for a child who is part of the SNAP household.</p>
-      </div>
-    </InlineMessage>
+    <RecommendationSection label="Required to decide if you still qualify">
+      <InlineMessage tone="caution" title="You may need to send verifications to complete your Recertification">
+        You must send in any mandatory verifications we request to complete your Recertification. Failure to comply may result in delay or denial of benefits.
+      </InlineMessage>
+      {SKIPPED_INCOME_RECOMMENDATIONS.map((rec) => (
+        <RecommendationCard key={rec.key} rec={rec} />
+      ))}
+    </RecommendationSection>
   );
 }
 
@@ -2202,7 +2152,7 @@ function ApplicationEditor({ app, setApp }) {
           <p className="text-sm leading-relaxed text-slate-700">
             When a client submits a recertification without responding to questions in the following sections, show generalized rules instead
           </p>
-          <ToggleInput app={app} setApp={setApp} path="skippedQuestions.incomeNoResponse" label="No response in income section" />
+          <ToggleInput app={app} setApp={setApp} path="skippedQuestions.incomeNoResponse" label="No response in earned/unearned income section/ show general recommendations for required proof" />
           <ToggleInput app={app} setApp={setApp} path="skippedQuestions.expensesNoResponse" label="No response in expenses section/ show general recommendations for optional expenses" />
         </InputGroup>
 
