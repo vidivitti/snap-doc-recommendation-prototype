@@ -1836,17 +1836,27 @@ function InlineMessage({ tone = "info", title, children }) {
   );
 }
 
-function SkippedIncomeGuidance() {
-  return (
-    <RecommendationSection label="Required to decide if you still qualify">
+function SkippedIncomeGuidance({ showSectionLabel = true }) {
+  const guidance = (
+    <>
       <InlineMessage tone="caution" title="You may need to send verifications to complete your Recertification">
         You must send in any mandatory verifications we request to complete your Recertification. Failure to comply may result in delay or denial of benefits.
       </InlineMessage>
       {SKIPPED_INCOME_RECOMMENDATIONS.map((rec) => (
         <RecommendationCard key={rec.key} rec={rec} />
       ))}
-    </RecommendationSection>
+    </>
   );
+
+  if (showSectionLabel) {
+    return (
+      <RecommendationSection label="Required to decide if you still qualify">
+        {guidance}
+      </RecommendationSection>
+    );
+  }
+
+  return <section className="mt-8 space-y-5">{guidance}</section>;
 }
 
 function SkippedExpensesGuidance() {
@@ -2362,6 +2372,7 @@ export default function SnapVerificationPrototype() {
   const optionalRecommendations = result.recs.filter((rec) => !rec.required);
   const showSkippedIncomeGuidance = Boolean(app.skippedQuestions?.incomeNoResponse);
   const showSkippedExpensesGuidance = Boolean(app.skippedQuestions?.expensesNoResponse);
+  const showCombinedSkippedGuidance = showSkippedIncomeGuidance && showSkippedExpensesGuidance;
 
   return (
     <main className="dta-page" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
@@ -2462,7 +2473,7 @@ export default function SnapVerificationPrototype() {
               <p>{recommendationIntro}</p>
               <p className="text-base">Your recertification due date is [RecertificationDueDate].</p>
             </div>
-            {mode === "client" ? (
+            {mode === "client" && !showCombinedSkippedGuidance ? (
               <div className="mt-5 max-w-2xl">
                 <InlineMessage tone="warning" title="DTA may request additional proof">
                   The suggestions below are based on what you told us. DTA may ask for additional documents after a worker reviews your recertification.
@@ -2477,7 +2488,7 @@ export default function SnapVerificationPrototype() {
               ) : null}
 
               {showSkippedIncomeGuidance ? (
-                <SkippedIncomeGuidance />
+                <SkippedIncomeGuidance showSectionLabel={!showCombinedSkippedGuidance} />
               ) : requiredRecommendations.length > 0 ? (
                 <RecommendationSection label="Required to decide if you still qualify">
                   {requiredRecommendations.map((rec, index) => <RecommendationCard key={rec.key} rec={rec} index={index} />)}
