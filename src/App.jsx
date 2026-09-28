@@ -121,8 +121,7 @@ const CARD_EMOJI_BY_RULE_ID = {
   "EXP-008": "💡",
   "EXP-009": "💡",
   "EXP-010": "💡",
-  "EXP-011": "👶",
-  "EXP-012": "🚗",
+  "EXP-019": "👶",
   "EXP-013": "👶💲",
   "EXP-014": "🩺💊",
   "EXP-016": "🚗",
@@ -1123,54 +1122,45 @@ const VERIFICATION_RULES = [
     "helpText": ""
   },
   {
-    "id": "EXP-011",
+    "id": "EXP-019",
     "triggerPath": "expenses.dependentCare.reported",
-    "eligiblePath": null,
-    "suppressible": false,
-    "dataPath": null,
-    "icon": "dependentCare",
-    "section": "Dependent care expenses",
-    "answer": "Dependent care (general expenses) selected",
-    "title": "Proof of dependent care costs",
-    "examples": [
-      "Statement or letter from the child or adult care provider showing the amount that you are responsible for",
-      "Receipts, canceled check, or money order"
-    ],
-    "required": false,
-    "recommendationType": "Optional, but may increase benefits",
-    "dtaDataAvailable": "No",
-    "dtaDataReliability": "",
-    "microcopy": "Send proof of child or adult care costs. These costs may increase your SNAP benefit amount.",
-    "source": "All",
-    "helpText": ""
-  },
-  {
-    "id": "EXP-012",
-    "triggerPath": "expenses.dependentCare.driveToProvider",
     "triggerAnyPaths": [
+      "expenses.dependentCare.reported",
       "expenses.dependentCare.driveToProvider",
       "expenses.dependentCare.paidTransportation"
     ],
     "eligiblePath": null,
     "suppressible": false,
     "dataPath": null,
-    "icon": "car",
+    "icon": "dependentCare",
     "section": "Dependent care expenses",
-    "answer": "Drive dependent to/from care provider or pay for transportation for dependent care selected",
-    "title": "Proof of transportation costs to dependent care",
-    "examples": [],
+    "answer": "Dependent care (general expenses), drive dependent to/from care provider, or pay for transportation for dependent care selected",
+    "title": "Proof of dependent care expenses",
+    "examples": [
+      "Statement or letter from the child or adult care provider showing the amount you are responsible for.",
+      "Receipts, canceled check, or money order.",
+      {
+        "type": "paragraph",
+        "text": "If you pay for parking or tolls or use transportation to bring the person to the care provider:"
+      },
+      "Parking or toll receipts",
+      "Statement or receipts from a transportation company (Lyft, Uber), or for public transportation (bus, subway, taxi, The RIDE).",
+      {
+        "type": "paragraph",
+        "segments": [
+          { "strong": "If you drive:" },
+          " send a signed travel statement or self-declaration with the provider address and how often you drive there."
+        ]
+      }
+    ],
+    "examplesLabel": "Examples for proof of dependent care expenses",
     "required": false,
     "recommendationType": "Optional, but may increase benefits",
     "dtaDataAvailable": "No",
     "dtaDataReliability": "",
-    "microcopy": "If you drive: Send a signed statement with the care provider address and how often you drive there\n\nIf you pay for parking or tolls or use transportation: Receipts from the transportation company (e.g., Lyft, Uber)\n- Receipts for public transportation (e.g., bus, subway, taxi, The RIDE)\n- Receipts for parking or tolls\n\nMake sure to note the frequency of the trips (writing on the receipt is ok)",
+    "microcopy": "Send proof of child or adult dependent care expenses including travel expenses if you have them. These expenses may increase your SNAP benefit amount.",
     "source": "All",
-    "helpText": "",
-    "details": {
-      "label": "Show me an example of a travel statement",
-      "content": "I, [Your First and Last name] drive to [care provider name], located at [street address, city, state, zip code] every [frequency]. \n\nSigned: [Your name/signature]\nDate: [Today's date]",
-      "italic": true
-    }
+    "helpText": ""
   },
   {
     "id": "EXP-013",
@@ -1567,6 +1557,20 @@ function runPrototypeTests() {
     !VERIFICATION_RULES.some((rule) => ["EXP-002", "EXP-003", "EXP-004", "EXP-005"].includes(rule.id)),
     "Expected the four retired shelter-expense rules to be removed from active recommendations"
   );
+  const dependentCareRule = VERIFICATION_RULES.find((rule) => rule.id === "EXP-019");
+  console.assert(dependentCareRule?.triggerAnyPaths?.length === 3, "Expected one combined dependent-care rule with three triggers");
+  console.assert(dependentCareRule?.examplesLabel === "Examples for proof of dependent care expenses", "Expected approved dependent-care examples label");
+  console.assert(
+    !VERIFICATION_RULES.some((rule) => ["EXP-011", "EXP-012"].includes(rule.id)),
+    "Expected the retired dependent-care rules to be removed from active recommendations"
+  );
+
+  dependentCareRule.triggerAnyPaths.forEach((path) => {
+    const dependentCareScenario = clone(EMPTY_APPLICATION);
+    setPathValue(dependentCareScenario, path, true);
+    const result = recommendVerifications(dependentCareScenario, { suppressInternalData: true, includeIdentity: false });
+    console.assert(result.recs.filter((rec) => rec.key === "EXP-019").length === 1, `Expected ${path} to produce one combined dependent-care recommendation`);
+  });
 
   const freelance = recommendVerifications(SAMPLE_APPLICATIONS.freelanceCaregiver, DEFAULT_SETTINGS);
 
@@ -1646,7 +1650,7 @@ function runPrototypeTests() {
   fullExpenses.expenses.medical.healthInsuranceRelated = true;
 
   const fullExpensesResult = recommendVerifications(fullExpenses, { suppressInternalData: true, includeIdentity: false });
-  ["EXP-001", "EXP-018", "EXP-006", "EXP-011", "EXP-012", "EXP-013", "EXP-014", "EXP-016", "EXP-017"].forEach((key) => {
+  ["EXP-001", "EXP-018", "EXP-006", "EXP-019", "EXP-013", "EXP-014", "EXP-016", "EXP-017"].forEach((key) => {
     console.assert(fullExpensesResult.recs.some((rec) => rec.key === key), `Expected ${key} recommendation`);
   });
   console.assert(!fullExpensesResult.recs.some((rec) => rec.key === "EXP-015"), "Did not expect retired EXP-015 recommendation");
@@ -1668,8 +1672,8 @@ function runPrototypeTests() {
   paidDependentTransportationOnly.expenses.dependentCare.paidTransportation = true;
   const paidDependentTransportationOnlyResult = recommendVerifications(paidDependentTransportationOnly, { suppressInternalData: true, includeIdentity: false });
   console.assert(
-    paidDependentTransportationOnlyResult.recs.some((rec) => rec.key === "EXP-012"),
-    "Expected EXP-012 when paid dependent-care transportation is selected"
+    paidDependentTransportationOnlyResult.recs.some((rec) => rec.key === "EXP-019"),
+    "Expected EXP-019 when paid dependent-care transportation is selected"
   );
 
   const otherUtilityOnly = clone(EMPTY_APPLICATION);
