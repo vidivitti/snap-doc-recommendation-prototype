@@ -1241,10 +1241,9 @@ const VERIFICATION_RULES = [
         "type": "paragraph",
         "segments": [
           {
-            "text": "For more medical expenses examples",
+            "text": "Learn more about medical expense for SNAP on Mass.gov",
             "href": "https://www.mass.gov/guides/examples-of-medical-costs"
-          },
-          " (Mass.gov)"
+          }
         ]
       }
     ],
