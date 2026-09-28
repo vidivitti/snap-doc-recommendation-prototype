@@ -963,15 +963,25 @@ const VERIFICATION_RULES = [
     "examples": [
       "Lease",
       "Rent payment receipt",
-      "Statement from your landlord",
-      "Cancelled or cashed check",
-      "Payment app record showing rent payment"
+      {
+        "segments": [
+          "Letter or statement from your landlord or ",
+          {
+            "text": "Landlord verification form (PDF download)",
+            "href": "https://eohhs.ehs.state.ma.us/DTA/PolicyOnline/olg%20docs/form/08/ll-ver.pdf",
+            "download": "landlord-verification-form.pdf"
+          }
+        ]
+      },
+      "Cancelled check or money order",
+      "Shared living form or other document showing the exact amount you are supposed to pay"
     ],
+    "examplesLabel": "Examples for proof of rent",
     "required": false,
     "recommendationType": "Optional, but may increase benefits",
     "dtaDataAvailable": "No",
     "dtaDataReliability": "",
-    "microcopy": "Send proof of rent if you can. Rent costs may increase SNAP benefit amount.",
+    "microcopy": "Send proof of rent if you can. Rent expenses can increase SNAP benefit amount.\n\nIf you are not the primary tenant or the homeowner, provide a statement from the person you live with stating what your share of the rent is.",
     "source": "All",
     "helpText": ""
   },
@@ -1616,6 +1626,12 @@ function runPrototypeTests() {
     SKIPPED_EXPENSE_RECOMMENDATIONS.filter((rec) => rec.details).length === 2,
     "Expected travel-statement examples for dependent care and medical costs"
   );
+  const rentRule = VERIFICATION_RULES.find((rule) => rule.id === "EXP-001");
+  console.assert(rentRule?.examplesLabel === "Examples for proof of rent", "Expected approved rent examples label");
+  console.assert(
+    rentRule?.examples?.some((example) => example?.segments?.some((segment) => segment?.download === "landlord-verification-form.pdf")),
+    "Expected the rent examples to include a downloadable landlord verification form"
+  );
 
   const freelance = recommendVerifications(SAMPLE_APPLICATIONS.freelanceCaregiver, DEFAULT_SETTINGS);
 
@@ -1900,6 +1916,18 @@ function InlineExampleContent({ example }) {
   if (Array.isArray(example.segments)) {
     return example.segments.map((segment, index) => {
       if (typeof segment === "string") return segment;
+      if (segment.href) {
+        return (
+          <a
+            key={`${segment.href}-${index}`}
+            href={segment.href}
+            download={segment.download || undefined}
+            className="font-semibold text-[#14558f] underline"
+          >
+            {segment.text}
+          </a>
+        );
+      }
       return <strong key={`${segment.strong}-${index}`} className="font-bold">{segment.strong}</strong>;
     });
   }
