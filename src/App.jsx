@@ -1141,7 +1141,10 @@ const VERIFICATION_RULES = [
       "Receipts, canceled check, or money order.",
       {
         "type": "paragraph",
-        "text": "If you pay for parking or tolls or use transportation to bring the person to the care provider:"
+        "segments": [
+          { "strong": "If you pay for parking or tolls or use transportation" },
+          " to bring the person to the care provider:"
+        ]
       },
       "Parking or toll receipts",
       "Statement or receipts from a transportation company (Lyft, Uber), or for public transportation (bus, subway, taxi, The RIDE).",
@@ -1160,7 +1163,12 @@ const VERIFICATION_RULES = [
     "dtaDataReliability": "",
     "microcopy": "Send proof of child or adult dependent care expenses including travel expenses if you have them. These expenses may increase your SNAP benefit amount.",
     "source": "All",
-    "helpText": ""
+    "helpText": "",
+    "details": {
+      "label": "Show me an example of a dependent care travel statement",
+      "content": "I, [Your First and Last name] drive to [provider address], located at [street address, city, state, zip code] every [frequency].\n\nSigned: [Your name/signature]\n\nDate: [Today's date]",
+      "italic": true
+    }
   },
   {
     "id": "EXP-013",
@@ -1560,6 +1568,10 @@ function runPrototypeTests() {
   const dependentCareRule = VERIFICATION_RULES.find((rule) => rule.id === "EXP-019");
   console.assert(dependentCareRule?.triggerAnyPaths?.length === 3, "Expected one combined dependent-care rule with three triggers");
   console.assert(dependentCareRule?.examplesLabel === "Examples for proof of dependent care expenses", "Expected approved dependent-care examples label");
+  console.assert(
+    dependentCareRule?.details?.label === "Show me an example of a dependent care travel statement",
+    "Expected a second dependent-care travel-statement toggle"
+  );
   console.assert(
     !VERIFICATION_RULES.some((rule) => ["EXP-011", "EXP-012"].includes(rule.id)),
     "Expected the retired dependent-care rules to be removed from active recommendations"
