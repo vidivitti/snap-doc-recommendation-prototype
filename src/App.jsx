@@ -123,9 +123,7 @@ const CARD_EMOJI_BY_RULE_ID = {
   "EXP-010": "💡",
   "EXP-019": "👶",
   "EXP-013": "👶💲",
-  "EXP-014": "🩺💊",
-  "EXP-016": "🚗",
-  "EXP-017": "🩺💊"
+  "EXP-020": "🩺💊"
 };
 
 const DEFAULT_SETTINGS = {
@@ -1195,90 +1193,72 @@ const VERIFICATION_RULES = [
     "helpText": ""
   },
   {
-    "id": "EXP-014",
+    "id": "EXP-020",
     "triggerPath": "expenses.medical.reported",
+    "triggerAnyPaths": [
+      "expenses.medical.reported",
+      "expenses.medical.transportation",
+      "expenses.medical.healthInsuranceRelated"
+    ],
     "eligiblePath": null,
     "suppressible": false,
     "dataPath": null,
     "icon": "medicalPair",
     "section": "Medical expenses",
-    "answer": "Medical expenses (general) selected",
+    "answer": "Medical expenses (general), drive to medical appointments or the pharmacy, or health insurance expenses selected",
     "title": "Proof of medical expenses",
     "examples": [
-      {
-        "text": "Bills or receipts for medical costs not covered by MassHealth or other insurance, such as:",
-        "children": [
-          "one-time medical bills",
-          "prescription medication",
-          "over-the-counter medical items",
-          "dental care or dentures",
-          "eyeglasses",
-          "hearing aid batteries",
-          "Payments for home health aides or other care you need",
-          {
-            "text": "For more medical expenses examples click here",
-            "href": "https://www.mass.gov/guides/examples-of-medical-costs"
-          }
-        ]
-      }
-    ],
-    "required": false,
-    "recommendationType": "Optional, but may increase benefits",
-    "dtaDataAvailable": "No",
-    "dtaDataReliability": "",
-    "microcopy": "Sending proof of medical costs over $35 a month may increase your SNAP benefit amount. Make sure to note the frequency of the expense. (writing on the receipt is ok)",
-    "source": "All",
-    "helpText": ""
-  },
-  {
-    "id": "EXP-016",
-    "triggerPath": "expenses.medical.transportation",
-    "eligiblePath": null,
-    "suppressible": false,
-    "dataPath": null,
-    "icon": "car",
-    "section": "Medical expenses",
-    "answer": "Drive to medical appointments or the pharmacy selected",
-    "title": "Proof of transportation costs to medical appointments",
-    "examples": [],
-    "required": false,
-    "recommendationType": "Optional, but may increase benefits",
-    "dtaDataAvailable": "No",
-    "dtaDataReliability": "",
-    "microcopy": "If you drive: Send a signed statement with the address of the provider/pharmacy and how often you drive there\n\nIf you pay for parking or tolls or use transportation: Receipts from the transportation company (e.g., Lyft, Uber)\n- Receipts for public transportation (e.g., bus, subway, taxi, The RIDE)\n- Receipts for parking or tolls\n\nMake sure to note the frequency of the expense (writing on the receipt is ok)",
-    "source": "All",
-    "helpText": "",
-    "details": {
-      "label": "Show me an example of a travel statement",
-      "content": "I, [Your First and Last name] drive to [provider or pharmacy address], located at [street address, city, state, zip code] every [frequency]. \n\nSigned: [Your name/signature]\nDate: [Today's date]",
-      "italic": true
-    }
-  },
-  {
-    "id": "EXP-017",
-    "triggerPath": "expenses.medical.healthInsuranceRelated",
-    "eligiblePath": null,
-    "suppressible": false,
-    "dataPath": null,
-    "icon": "medicalPair",
-    "section": "Medical expenses",
-    "answer": "Health insurance expenses selected",
-    "title": "Proof of health insurance expenses",
-    "examples": [
+      { "type": "heading", "text": "Common health insurance and medical expenses include:" },
       "Copay receipts",
       "Explanation of benefits",
       "Pharmacy printout",
       "Provider bill",
       "Insurer statement",
-      "Premium bill"
+      "Premium bill",
+      "One-time medical bills",
+      "Prescription medication",
+      "Over-the-counter medical items",
+      "Dental care or dentures",
+      "Eyeglasses",
+      "Hearing aid batteries",
+      "Payments for home health aides or other care you need",
+      {
+        "type": "paragraph",
+        "segments": [
+          { "strong": "If you pay for parking or tolls or use transportation:" }
+        ]
+      },
+      "Receipts for public transportation (e.g., bus, subway, taxi, The RIDE)",
+      "Receipts for parking or tolls",
+      {
+        "segments": [
+          { "strong": "If you drive:" },
+          " Send a signed statement with the address of the provider/pharmacy and how often you drive there"
+        ]
+      },
+      {
+        "segments": [
+          {
+            "text": "For more medical expenses examples",
+            "href": "https://www.mass.gov/guides/examples-of-medical-costs"
+          },
+          " (Mass.gov)"
+        ]
+      }
     ],
+    "examplesLabel": "Examples for proof of medical and health insurance expenses",
     "required": false,
     "recommendationType": "Optional, but may increase benefits",
     "dtaDataAvailable": "No",
     "dtaDataReliability": "",
-    "microcopy": "Sending proof of medical costs over $35 a month may increase your SNAP benefit amount. Make sure to note the frequency of the expense. (writing on the receipt is ok)",
-    "source": "Interim report; Recertification",
-    "helpText": ""
+    "microcopy": "Sending proof of medical costs over $35 a month may increase your SNAP benefit amount. Send us proof of bills, receipts, or statements for medical costs not covered by MassHealth or other insurance. Make sure to note the frequency of the expense (writing on the receipt is ok)",
+    "source": "All",
+    "helpText": "",
+    "details": {
+      "label": "Show me an example of a medical travel statement",
+      "content": "I, [Your First and Last name] drive to [provider or pharmacy address], located at [street address, city, state, zip code] every [frequency].\n\nSigned: [Your name/signature]\n\nDate: [Today's date]",
+      "italic": true
+    }
   }
 ];
 
@@ -1583,11 +1563,32 @@ function runPrototypeTests() {
     const result = recommendVerifications(dependentCareScenario, { suppressInternalData: true, includeIdentity: false });
     console.assert(result.recs.filter((rec) => rec.key === "EXP-019").length === 1, `Expected ${path} to produce one combined dependent-care recommendation`);
   });
+  const medicalRule = VERIFICATION_RULES.find((rule) => rule.id === "EXP-020");
+  console.assert(medicalRule?.triggerAnyPaths?.length === 3, "Expected one combined medical-expense rule with three triggers");
+  console.assert(
+    medicalRule?.examplesLabel === "Examples for proof of medical and health insurance expenses",
+    "Expected approved medical-expense examples label"
+  );
+  console.assert(
+    medicalRule?.details?.label === "Show me an example of a medical travel statement",
+    "Expected a second medical travel-statement toggle"
+  );
+  console.assert(
+    !VERIFICATION_RULES.some((rule) => ["EXP-014", "EXP-016", "EXP-017"].includes(rule.id)),
+    "Expected the retired medical-expense rules to be removed from active recommendations"
+  );
+
+  medicalRule.triggerAnyPaths.forEach((path) => {
+    const medicalScenario = clone(EMPTY_APPLICATION);
+    setPathValue(medicalScenario, path, true);
+    const result = recommendVerifications(medicalScenario, { suppressInternalData: true, includeIdentity: false });
+    console.assert(result.recs.filter((rec) => rec.key === "EXP-020").length === 1, `Expected ${path} to produce one combined medical recommendation`);
+  });
 
   const freelance = recommendVerifications(SAMPLE_APPLICATIONS.freelanceCaregiver, DEFAULT_SETTINGS);
 
   console.assert(freelance.recs.some((rec) => rec.key === "INC-003"), "Expected self-employment recommendation");
-  console.assert(freelance.recs.some((rec) => rec.key === "EXP-014"), "Expected medical expense recommendation");
+  console.assert(freelance.recs.some((rec) => rec.key === "EXP-020"), "Expected medical expense recommendation");
   console.assert(freelance.suppressed.some((rec) => rec.key === "INC-008"), "Expected RSDI suppression");
   console.assert(freelance.suppressed.some((rec) => rec.key === "INC-012"), "Expected child support suppression");
 
@@ -1597,7 +1598,7 @@ function runPrototypeTests() {
   const medicalOnly = clone(EMPTY_APPLICATION);
   medicalOnly.expenses.medical.reported = true;
   const medicalOnlyResult = recommendVerifications(medicalOnly, DEFAULT_SETTINGS);
-  console.assert(medicalOnlyResult.recs.some((rec) => rec.key === "EXP-014"), "Expected medical recommendation from visible medical checkbox");
+  console.assert(medicalOnlyResult.recs.some((rec) => rec.key === "EXP-020"), "Expected medical recommendation from visible medical checkbox");
 
   const fullIncome = clone(EMPTY_APPLICATION);
   fullIncome.identity.likelyRMVMatch = false;
@@ -1662,7 +1663,7 @@ function runPrototypeTests() {
   fullExpenses.expenses.medical.healthInsuranceRelated = true;
 
   const fullExpensesResult = recommendVerifications(fullExpenses, { suppressInternalData: true, includeIdentity: false });
-  ["EXP-001", "EXP-018", "EXP-006", "EXP-019", "EXP-013", "EXP-014", "EXP-016", "EXP-017"].forEach((key) => {
+  ["EXP-001", "EXP-018", "EXP-006", "EXP-019", "EXP-013", "EXP-020"].forEach((key) => {
     console.assert(fullExpensesResult.recs.some((rec) => rec.key === key), `Expected ${key} recommendation`);
   });
   console.assert(!fullExpensesResult.recs.some((rec) => rec.key === "EXP-015"), "Did not expect retired EXP-015 recommendation");
