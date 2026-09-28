@@ -115,10 +115,7 @@ const CARD_EMOJI_BY_RULE_ID = {
   "HH-002": "🎓",
   "WRK-001": "📝",
   "EXP-001": "🏠",
-  "EXP-002": "🏠",
-  "EXP-003": "🏠",
-  "EXP-004": "🏠",
-  "EXP-005": "🏠",
+  "EXP-018": "🏠",
   "EXP-006": "💡",
   "EXP-007": "💡",
   "EXP-008": "💡",
@@ -179,10 +176,7 @@ const EMPTY_APPLICATION = {
   },
   expenses: {
     rent: { reported: false },
-    mortgage: { reported: false },
-    propertyTaxes: { reported: false },
-    homeInsurance: { reported: false },
-    condoFees: { reported: false },
+    housingCosts: { reported: false },
     utilities: {
       heat: false,
       acElectricity: false,
@@ -986,94 +980,28 @@ const VERIFICATION_RULES = [
     "helpText": ""
   },
   {
-    "id": "EXP-002",
-    "triggerPath": "expenses.mortgage.reported",
+    "id": "EXP-018",
+    "triggerPath": "expenses.housingCosts.reported",
     "eligiblePath": null,
     "suppressible": false,
     "dataPath": null,
     "icon": "mortgage",
     "section": "Shelter expenses",
-    "answer": "Mortgage selected",
-    "title": "Proof of mortgage payment",
+    "answer": "Housing costs (Mortgage, Property taxes, Home insurance, and Condo fees) selected",
+    "title": "Proof of housing costs",
     "examples": [
-      "Mortgage statement",
-      "Lender statement",
-      "Payment record saying the exact amount you are supposed to pay"
+      "Mortgage or lender statement",
+      "Payment records showing the exact amount you are supposed to pay",
+      "Property tax bill, municipal tax statement, escrow statement",
+      "Home insurance bill or home insurance policy statement",
+      "Condo fee bill, HOA statement, or condo fee or HOA payment receipt"
     ],
+    "examplesLabel": "Examples for proof of housing costs",
     "required": false,
     "recommendationType": "Optional, but may increase benefits",
     "dtaDataAvailable": "No",
     "dtaDataReliability": "",
-    "microcopy": "Send proof of mortgage payments if you can. Housing costs may increase your SNAP benefit amount.",
-    "source": "All",
-    "helpText": ""
-  },
-  {
-    "id": "EXP-003",
-    "triggerPath": "expenses.propertyTaxes.reported",
-    "eligiblePath": null,
-    "suppressible": false,
-    "dataPath": null,
-    "icon": "mortgage",
-    "section": "Shelter expenses",
-    "answer": "Property taxes selected",
-    "title": "Proof of property taxes",
-    "examples": [
-      "Property tax bill",
-      "Municipal tax statement",
-      "Escrow statement showing the exact amount you pay"
-    ],
-    "required": false,
-    "recommendationType": "Optional, but may increase benefits",
-    "dtaDataAvailable": "No",
-    "dtaDataReliability": "",
-    "microcopy": "Send proof of property taxes if you can.",
-    "source": "All",
-    "helpText": ""
-  },
-  {
-    "id": "EXP-004",
-    "triggerPath": "expenses.homeInsurance.reported",
-    "eligiblePath": null,
-    "suppressible": false,
-    "dataPath": null,
-    "icon": "mortgage",
-    "section": "Shelter expenses",
-    "answer": "Home insurance selected",
-    "title": "Proof of home insurance",
-    "examples": [
-      "Homeowners insurance bill",
-      "Policy statement",
-      "Escrow statement showing the exact amount you pay"
-    ],
-    "required": false,
-    "recommendationType": "Optional, but may increase benefits",
-    "dtaDataAvailable": "No",
-    "dtaDataReliability": "",
-    "microcopy": "Send proof of home insurance if you can.",
-    "source": "All",
-    "helpText": ""
-  },
-  {
-    "id": "EXP-005",
-    "triggerPath": "expenses.condoFees.reported",
-    "eligiblePath": null,
-    "suppressible": false,
-    "dataPath": null,
-    "icon": "mortgage",
-    "section": "Shelter expenses",
-    "answer": "Condo fees selected",
-    "title": "Proof of condo fees",
-    "examples": [
-      "Condo fee bill",
-      "HOA statement",
-      "Payment record or receipt"
-    ],
-    "required": false,
-    "recommendationType": "Optional, but may increase benefits",
-    "dtaDataAvailable": "No",
-    "dtaDataReliability": "",
-    "microcopy": "Send proof of condo fees if you can.",
+    "microcopy": "Send proof of housing costs you pay like mortgage payments, property taxes, home insurance, or condo fees. Housing costs may increase your SNAP benefit amount.",
     "source": "All",
     "helpText": ""
   },
@@ -1632,6 +1560,13 @@ function runPrototypeTests() {
     rentRule?.examples?.some((example) => example?.segments?.some((segment) => segment?.download === "landlord-verification-form.pdf")),
     "Expected the rent examples to include a downloadable landlord verification form"
   );
+  const housingCostRule = VERIFICATION_RULES.find((rule) => rule.id === "EXP-018");
+  console.assert(housingCostRule?.triggerPath === "expenses.housingCosts.reported", "Expected one combined housing-cost trigger");
+  console.assert(housingCostRule?.examplesLabel === "Examples for proof of housing costs", "Expected approved housing-cost examples label");
+  console.assert(
+    !VERIFICATION_RULES.some((rule) => ["EXP-002", "EXP-003", "EXP-004", "EXP-005"].includes(rule.id)),
+    "Expected the four retired shelter-expense rules to be removed from active recommendations"
+  );
 
   const freelance = recommendVerifications(SAMPLE_APPLICATIONS.freelanceCaregiver, DEFAULT_SETTINGS);
 
@@ -1695,10 +1630,7 @@ function runPrototypeTests() {
 
   const fullExpenses = clone(EMPTY_APPLICATION);
   fullExpenses.expenses.rent.reported = true;
-  fullExpenses.expenses.mortgage.reported = true;
-  fullExpenses.expenses.propertyTaxes.reported = true;
-  fullExpenses.expenses.homeInsurance.reported = true;
-  fullExpenses.expenses.condoFees.reported = true;
+  fullExpenses.expenses.housingCosts.reported = true;
   fullExpenses.expenses.utilities.heat = true;
   fullExpenses.expenses.utilities.acElectricity = true;
   fullExpenses.expenses.utilities.acFee = true;
@@ -1714,7 +1646,7 @@ function runPrototypeTests() {
   fullExpenses.expenses.medical.healthInsuranceRelated = true;
 
   const fullExpensesResult = recommendVerifications(fullExpenses, { suppressInternalData: true, includeIdentity: false });
-  ["EXP-001", "EXP-002", "EXP-003", "EXP-004", "EXP-005", "EXP-006", "EXP-011", "EXP-012", "EXP-013", "EXP-014", "EXP-016", "EXP-017"].forEach((key) => {
+  ["EXP-001", "EXP-018", "EXP-006", "EXP-011", "EXP-012", "EXP-013", "EXP-014", "EXP-016", "EXP-017"].forEach((key) => {
     console.assert(fullExpensesResult.recs.some((rec) => rec.key === key), `Expected ${key} recommendation`);
   });
   console.assert(!fullExpensesResult.recs.some((rec) => rec.key === "EXP-015"), "Did not expect retired EXP-015 recommendation");
@@ -2239,10 +2171,7 @@ function ApplicationEditor({ app, setApp }) {
 
         <InputGroup title="Shelter expenses">
           <ToggleInput app={app} setApp={setApp} path="expenses.rent.reported" label="Rent" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.mortgage.reported" label="Mortgage" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.propertyTaxes.reported" label="Property taxes" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.homeInsurance.reported" label="Home insurance" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.condoFees.reported" label="Condo fees" />
+          <ToggleInput app={app} setApp={setApp} path="expenses.housingCosts.reported" label="Housing costs (Mortgage, Property taxes, Home insurance, and Condo fees)" />
         </InputGroup>
 
         <InputGroup title="Utilities">
