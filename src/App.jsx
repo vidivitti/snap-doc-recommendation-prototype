@@ -1231,12 +1231,14 @@ const VERIFICATION_RULES = [
       "Receipts for public transportation (e.g., bus, subway, taxi, The RIDE)",
       "Receipts for parking or tolls",
       {
+        "type": "paragraph",
         "segments": [
           { "strong": "If you drive:" },
           " Send a signed statement with the address of the provider/pharmacy and how often you drive there"
         ]
       },
       {
+        "type": "paragraph",
         "segments": [
           {
             "text": "For more medical expenses examples",
