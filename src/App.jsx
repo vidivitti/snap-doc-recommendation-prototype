@@ -869,7 +869,7 @@ const VERIFICATION_RULES = [
     "recommendationType": "Required",
     "dtaDataAvailable": "No",
     "dtaDataReliability": "",
-    "microcopy": "If a household member's noncitizen status has changed, please submit proof of the status.",
+    "microcopy": "If a someone new joined the household with a non citizen status, or someone's non citizen status has changed, please submit proof of the status.",
     "source": "Recertification",
     "helpText": ""
   },
@@ -1530,6 +1530,11 @@ function runPrototypeTests() {
     console.assert(recommendation?.required, `Expected ${key} to be required`);
   });
   const workRuleRecommendation = householdStatusResult.recs.find((rec) => rec.key === "WRK-001");
+  const nonCitizenRecommendation = householdStatusResult.recs.find((rec) => rec.key === "HH-001");
+  console.assert(
+    nonCitizenRecommendation?.why === "If a someone new joined the household with a non citizen status, or someone's non citizen status has changed, please submit proof of the status.",
+    "Expected approved noncitizen-status description"
+  );
   console.assert(workRuleRecommendation?.title === "Proof of work rule compliance or exemption", "Expected approved work-rule title");
   console.assert(
     workRuleRecommendation?.learnMore?.href === "https://www.mass.gov/info-details/work-rules-for-snap-clients",
