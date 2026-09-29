@@ -908,7 +908,7 @@ const VERIFICATION_RULES = [
     "icon": "workRules",
     "section": "Household member status",
     "answer": "A household member is ABAWD/must meet work rules",
-    "title": "Proof of work-rule compliance or exemption",
+    "title": "Proof of work rule compliance or exemption",
     "examples": [
       "Work or training schedule",
       "Pay stubs or statements",
@@ -919,11 +919,16 @@ const VERIFICATION_RULES = [
       "Benefit/disability record",
       "Other DTA forms"
     ],
+    "examplesLabel": "Examples for proof of work-rule compliance or exemption",
     "required": true,
     "recommendationType": "Required",
     "dtaDataAvailable": "Some exemptions may be known from age, disability, household, or benefits data; other exemptions require client proof",
     "dtaDataReliability": "Sometimes — confirm with DTA\nProof of work, hours, or pay may be found in the Work number",
-    "microcopy": "You answered questions about SNAP work rules. Send proof if you have it, especially if something exempts you from the rules.",
+    "microcopy": "Someone in the household is required to meet work rules. Send proof of meeting work rules or proof of an exemption.",
+    "learnMore": {
+      "text": "Learn more about work rules for Able-Bodied Adults without Dependents (ABAWD) on Mass.gov",
+      "href": "https://www.mass.gov/info-details/work-rules-for-snap-clients"
+    },
     "source": "Interim report; Recertification",
     "helpText": ""
   },
@@ -1368,6 +1373,7 @@ export function recommendVerifications(app, settings = DEFAULT_SETTINGS) {
       examples: rule.examples || [],
       examplesInline: Boolean(rule.examplesInline),
       examplesLabel: rule.examplesLabel,
+      learnMore: rule.learnMore,
       helperText: rule.helpText,
       details: rule.details,
       required: rule.required,
@@ -1523,6 +1529,12 @@ function runPrototypeTests() {
     console.assert(recommendation, `Expected ${key} recommendation`);
     console.assert(recommendation?.required, `Expected ${key} to be required`);
   });
+  const workRuleRecommendation = householdStatusResult.recs.find((rec) => rec.key === "WRK-001");
+  console.assert(workRuleRecommendation?.title === "Proof of work rule compliance or exemption", "Expected approved work-rule title");
+  console.assert(
+    workRuleRecommendation?.learnMore?.href === "https://www.mass.gov/info-details/work-rules-for-snap-clients",
+    "Expected work-rule Mass.gov link"
+  );
 
   const fullExpenses = clone(EMPTY_APPLICATION);
   fullExpenses.expenses.rent.reported = true;
@@ -1908,6 +1920,14 @@ function RecommendationCard({ rec }) {
       <div className="mt-2">
         <RichText text={rec.why} />
       </div>
+
+      {rec.learnMore ? (
+        <p className="mt-3 text-sm leading-relaxed">
+          <a href={rec.learnMore.href} target="_blank" rel="noreferrer" className="font-semibold text-[#14558f] underline underline-offset-2">
+            {rec.learnMore.text}
+          </a>
+        </p>
+      ) : null}
 
       {rec.examplesInline ? (
         <div className="mt-3">
