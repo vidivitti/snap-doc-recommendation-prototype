@@ -116,11 +116,7 @@ const CARD_EMOJI_BY_RULE_ID = {
   "WRK-001": "📝",
   "EXP-001": "🏠",
   "EXP-018": "🏠",
-  "EXP-006": "💡",
-  "EXP-007": "💡",
-  "EXP-008": "💡",
-  "EXP-009": "💡",
-  "EXP-010": "💡",
+  "EXP-021": "💡",
   "EXP-019": "👶",
   "EXP-013": "👶💲",
   "EXP-020": "🩺💊"
@@ -174,13 +170,7 @@ const EMPTY_APPLICATION = {
   expenses: {
     rent: { reported: false },
     housingCosts: { reported: false },
-    utilities: {
-      heat: false,
-      acElectricity: false,
-      acFee: false,
-      electricGas: false,
-      phone: false
-    },
+    utilities: { reported: false },
     dependentCare: {
       reported: false,
       driveToProvider: false,
@@ -226,9 +216,7 @@ const SAMPLE_APPLICATIONS = {
       rent: { reported: true },
       utilities: {
         ...EMPTY_APPLICATION.expenses.utilities,
-        heat: true,
-        acElectricity: true,
-        phone: true
+        reported: true
       },
       medical: {
         ...EMPTY_APPLICATION.expenses.medical,
@@ -252,8 +240,7 @@ const SAMPLE_APPLICATIONS = {
       rent: { reported: true },
       utilities: {
         ...EMPTY_APPLICATION.expenses.utilities,
-        electricGas: true,
-        phone: true
+        reported: true
       }
     }
   },
@@ -269,8 +256,7 @@ const SAMPLE_APPLICATIONS = {
       rent: { reported: true },
       utilities: {
         ...EMPTY_APPLICATION.expenses.utilities,
-        heat: true,
-        phone: true
+        reported: true
       }
     }
   }
@@ -1003,119 +989,27 @@ const VERIFICATION_RULES = [
     "helpText": ""
   },
   {
-    "id": "EXP-006",
-    "triggerPath": "expenses.utilities.heat",
+    "id": "EXP-021",
+    "triggerPath": "expenses.utilities.reported",
     "eligiblePath": null,
     "suppressible": false,
     "dataPath": null,
     "icon": "utilities",
     "section": "Utility expenses",
-    "answer": "Heat selected",
-    "title": "Proof you pay utilities",
+    "answer": "Utility and phone service expenses selected",
+    "title": "Proof you pay utilities or phone service",
     "examples": [
-      "Bill for heat, air conditioning, electricity, or gas",
+      "Bill for heat, air conditioning, electricity, gas or phone",
+      "Bill for other utility costs such as coal, wood for heating, garbage collection, water, and sewer",
       "Lease showing you pay for utilities",
-      "Receipt",
-      "Signed and dated letter from landlord or roommate"
+      "Letter from landlord or roommate saying how much you pay and how often."
     ],
+    "examplesLabel": "Examples for proof of utility or phone service costs",
     "required": false,
     "recommendationType": "Optional, but may increase benefits",
     "dtaDataAvailable": "No",
     "dtaDataReliability": "",
-    "microcopy": "Send proof that you pay for heating or cooling costs",
-    "source": "All",
-    "helpText": ""
-  },
-  {
-    "id": "EXP-007",
-    "triggerPath": "expenses.utilities.acElectricity",
-    "eligiblePath": null,
-    "suppressible": false,
-    "dataPath": null,
-    "icon": "utilities",
-    "section": "Utility expenses",
-    "answer": "Electricity for AC selected",
-    "title": "Proof you pay utilities",
-    "examples": [
-      "Bill for electricity or cooling",
-      "Lease showing you pay for utilities",
-      "Receipt",
-      "Signed and dated letter from landlord or roommate"
-    ],
-    "required": false,
-    "recommendationType": "Optional, but may increase benefits",
-    "dtaDataAvailable": "No",
-    "dtaDataReliability": "",
-    "microcopy": "Send proof that you pay for heating or cooling costs",
-    "source": "All",
-    "helpText": ""
-  },
-  {
-    "id": "EXP-008",
-    "triggerPath": "expenses.utilities.acFee",
-    "eligiblePath": null,
-    "suppressible": false,
-    "dataPath": null,
-    "icon": "utilities",
-    "section": "Utility expenses",
-    "answer": "Fee to use AC selected",
-    "title": "Proof you pay utilities or AC fee",
-    "examples": [
-      "Landlord statement",
-      "Lease addendum",
-      "Receipt",
-      "Bill"
-    ],
-    "required": false,
-    "recommendationType": "Optional, but may increase benefits",
-    "dtaDataAvailable": "No",
-    "dtaDataReliability": "",
-    "microcopy": "Send proof that you pay for heating or cooling costs",
-    "source": "All",
-    "helpText": ""
-  },
-  {
-    "id": "EXP-009",
-    "triggerPath": "expenses.utilities.electricGas",
-    "eligiblePath": null,
-    "suppressible": false,
-    "dataPath": null,
-    "icon": "utilities",
-    "section": "Utility expenses",
-    "answer": "Electricity/gas not used for heat selected",
-    "title": "Proof you pay utilities",
-    "examples": [
-      "Bill for other utility costs such as coal, wood for heating, garbage collection, water and sewer",
-      "Signed and dated letter from landlord or roommate"
-    ],
-    "required": false,
-    "recommendationType": "Optional, but may increase benefits",
-    "dtaDataAvailable": "No",
-    "dtaDataReliability": "",
-    "microcopy": "Send proof that you pay other utilities",
-    "source": "All",
-    "helpText": ""
-  },
-  {
-    "id": "EXP-010",
-    "triggerPath": "expenses.utilities.phone",
-    "eligiblePath": null,
-    "suppressible": false,
-    "dataPath": null,
-    "icon": "utilities",
-    "section": "Utility expenses",
-    "answer": "Phone/cell service selected",
-    "title": "Proof you pay phone or cell service",
-    "examples": [
-      "Phone bill",
-      "cell phone bill",
-      "account screenshot"
-    ],
-    "required": false,
-    "recommendationType": "Optional, but may increase benefits",
-    "dtaDataAvailable": "No",
-    "dtaDataReliability": "",
-    "microcopy": "Send proof that you pay for phone or cell service if you can.",
+    "microcopy": "Send proof that you pay for heat, air conditioning, electricity, gas, or phone.",
     "source": "All",
     "helpText": ""
   },
@@ -1444,22 +1338,6 @@ function isTriggered(app, rule) {
     : Boolean(getPathValue(app, rule.triggerPath));
   if (!hasTrigger) return false;
   if (rule.eligiblePath && !getPathValue(app, rule.eligiblePath)) return false;
-  if (!passesUtilityPrecedence(app, rule)) return false;
-  return true;
-}
-
-function passesUtilityPrecedence(app, rule) {
-  const heatSelected = Boolean(getPathValue(app, "expenses.utilities.heat"));
-  const acElectricitySelected = Boolean(getPathValue(app, "expenses.utilities.acElectricity"));
-  const acFeeSelected = Boolean(getPathValue(app, "expenses.utilities.acFee"));
-  const highPriorityUtilitySelected = heatSelected || acElectricitySelected || acFeeSelected;
-  const otherUtilitySelected = Boolean(getPathValue(app, "expenses.utilities.electricGas"));
-
-  if (rule.id === "EXP-006") return heatSelected;
-  if (rule.id === "EXP-007") return !heatSelected && acElectricitySelected;
-  if (rule.id === "EXP-008") return !heatSelected && !acElectricitySelected && acFeeSelected;
-  if (rule.id === "EXP-009") return !highPriorityUtilitySelected;
-  if (rule.id === "EXP-010") return !highPriorityUtilitySelected && !otherUtilitySelected;
   return true;
 }
 
@@ -1649,11 +1527,7 @@ function runPrototypeTests() {
   const fullExpenses = clone(EMPTY_APPLICATION);
   fullExpenses.expenses.rent.reported = true;
   fullExpenses.expenses.housingCosts.reported = true;
-  fullExpenses.expenses.utilities.heat = true;
-  fullExpenses.expenses.utilities.acElectricity = true;
-  fullExpenses.expenses.utilities.acFee = true;
-  fullExpenses.expenses.utilities.electricGas = true;
-  fullExpenses.expenses.utilities.phone = true;
+  fullExpenses.expenses.utilities.reported = true;
   fullExpenses.expenses.dependentCare.reported = true;
   fullExpenses.expenses.dependentCare.driveToProvider = true;
   fullExpenses.expenses.dependentCare.paidTransportation = true;
@@ -1664,23 +1538,14 @@ function runPrototypeTests() {
   fullExpenses.expenses.medical.healthInsuranceRelated = true;
 
   const fullExpensesResult = recommendVerifications(fullExpenses, { suppressInternalData: true, includeIdentity: false });
-  ["EXP-001", "EXP-018", "EXP-006", "EXP-019", "EXP-013", "EXP-020"].forEach((key) => {
+  ["EXP-001", "EXP-018", "EXP-021", "EXP-019", "EXP-013", "EXP-020"].forEach((key) => {
     console.assert(fullExpensesResult.recs.some((rec) => rec.key === key), `Expected ${key} recommendation`);
   });
   console.assert(!fullExpensesResult.recs.some((rec) => rec.key === "EXP-015"), "Did not expect retired EXP-015 recommendation");
-  ["EXP-007", "EXP-008", "EXP-009", "EXP-010"].forEach((key) => {
-    console.assert(!fullExpensesResult.recs.some((rec) => rec.key === key), `Did not expect ${key} when heat/cooling utility proof is already recommended`);
-  });
-
-  const acElectricOnly = clone(EMPTY_APPLICATION);
-  acElectricOnly.expenses.utilities.acElectricity = true;
-  const acElectricOnlyResult = recommendVerifications(acElectricOnly, { suppressInternalData: true, includeIdentity: false });
-  console.assert(acElectricOnlyResult.recs.some((rec) => rec.key === "EXP-007"), "Expected EXP-007 when only AC electricity is selected");
-
-  const acFeeOnly = clone(EMPTY_APPLICATION);
-  acFeeOnly.expenses.utilities.acFee = true;
-  const acFeeOnlyResult = recommendVerifications(acFeeOnly, { suppressInternalData: true, includeIdentity: false });
-  console.assert(acFeeOnlyResult.recs.some((rec) => rec.key === "EXP-008"), "Expected EXP-008 when only AC fee is selected");
+  console.assert(
+    !VERIFICATION_RULES.some((rule) => ["EXP-006", "EXP-007", "EXP-008", "EXP-009", "EXP-010"].includes(rule.id)),
+    "Expected retired utility rules to be removed from active recommendations"
+  );
 
   const paidDependentTransportationOnly = clone(EMPTY_APPLICATION);
   paidDependentTransportationOnly.expenses.dependentCare.paidTransportation = true;
@@ -1690,15 +1555,10 @@ function runPrototypeTests() {
     "Expected EXP-019 when paid dependent-care transportation is selected"
   );
 
-  const otherUtilityOnly = clone(EMPTY_APPLICATION);
-  otherUtilityOnly.expenses.utilities.electricGas = true;
-  const otherUtilityOnlyResult = recommendVerifications(otherUtilityOnly, { suppressInternalData: true, includeIdentity: false });
-  console.assert(otherUtilityOnlyResult.recs.some((rec) => rec.key === "EXP-009"), "Expected EXP-009 when only other utility is selected");
-
-  const phoneOnly = clone(EMPTY_APPLICATION);
-  phoneOnly.expenses.utilities.phone = true;
-  const phoneOnlyResult = recommendVerifications(phoneOnly, { suppressInternalData: true, includeIdentity: false });
-  console.assert(phoneOnlyResult.recs.some((rec) => rec.key === "EXP-010"), "Expected EXP-010 when only phone is selected");
+  const utilityOnly = clone(EMPTY_APPLICATION);
+  utilityOnly.expenses.utilities.reported = true;
+  const utilityOnlyResult = recommendVerifications(utilityOnly, { suppressInternalData: true, includeIdentity: false });
+  console.assert(utilityOnlyResult.recs.filter((rec) => rec.key === "EXP-021").length === 1, "Expected one combined utility recommendation");
 }
 
 runPrototypeTests();
@@ -2193,11 +2053,7 @@ function ApplicationEditor({ app, setApp }) {
         </InputGroup>
 
         <InputGroup title="Utilities">
-          <ToggleInput app={app} setApp={setApp} path="expenses.utilities.heat" label="Heat" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.utilities.acElectricity" label="Electricity for air conditioner" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.utilities.acFee" label="Fee to use air conditioner" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.utilities.electricGas" label="Electricity/gas not used for heat" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.utilities.phone" label="Phone/cell service" />
+          <ToggleInput app={app} setApp={setApp} path="expenses.utilities.reported" label="Utility and phone service expenses" />
         </InputGroup>
 
         <InputGroup title="Dependent care expenses">
