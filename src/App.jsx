@@ -1745,9 +1745,9 @@ function MayflowerIcon({ name, size = 32, className = "" }) {
     const pairSize = Math.max(18, Math.round(size * 0.72));
     return (
       <span aria-hidden="true" className={`dta-icon ${className}`}>
-        <span className="inline-flex items-center">
+        <span className="inline-flex items-center gap-1">
           <Prescription size={pairSize} weight={size <= 24 ? "bold" : "regular"} />
-          <Receipt size={pairSize} weight={size <= 24 ? "bold" : "regular"} className="-ml-2" />
+          <Receipt size={pairSize} weight={size <= 24 ? "bold" : "regular"} />
         </span>
       </span>
     );
