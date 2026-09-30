@@ -2339,7 +2339,7 @@ export default function SnapVerificationPrototype() {
               </button>
             ) : null}
 
-            <h1 className="mass-heading-2xl mt-4 max-w-4xl text-[#141414]">Submit proof now</h1>
+            <h1 className="mass-heading-xl mt-4 max-w-4xl text-[#141414]">Submit proof now</h1>
             <p className="mt-6 max-w-3xl text-[1.125rem] leading-[1.4] text-[#141414]">
               <strong className="block font-semibold">Submitting documents now will help avoid delays.</strong>
               <span className="mt-0.5 block">Your recertification due date is [RecertificationDueDate]</span>
