@@ -2340,11 +2340,9 @@ export default function SnapVerificationPrototype() {
             ) : null}
 
             <h1 className="mass-heading-2xl mt-4 max-w-4xl text-[#141414]">Submit proof now</h1>
-            <h2 className="mass-body-lg mt-6 max-w-3xl text-[#141414]">
-              Submitting documents now will help avoid delays.
-            </h2>
-            <p className="mass-body-lg mt-2 max-w-2xl text-[#141414]">
-              Your recertification due date is [RecertificationDueDate]
+            <p className="mt-6 max-w-3xl text-[1.125rem] leading-[1.4] text-[#141414]">
+              <strong className="block font-semibold">Submitting documents now will help avoid delays.</strong>
+              <span className="mt-0.5 block">Your recertification due date is [RecertificationDueDate]</span>
             </p>
             <button type="button" className="dta-button-primary mt-6 w-full sm:w-auto">
               <span>Send documents to DTA</span>
