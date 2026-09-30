@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import {
+  ArrowRight,
   Baby,
   Briefcase,
   Car,
@@ -2238,7 +2239,6 @@ export default function SnapVerificationPrototype() {
   const [showPolicyToggles, setShowPolicyToggles] = useState(true);
 
   const result = useMemo(() => recommendVerifications(app, settings), [app, settings]);
-  const recommendationIntro = "Sending proof now will help avoid delays.";
   const requiredRecommendations = result.recs.filter((rec) => rec.required);
   const optionalRecommendations = result.recs.filter((rec) => !rec.required);
   const showSkippedIncomeGuidance = Boolean(app.skippedQuestions?.incomeNoResponse);
@@ -2328,7 +2328,7 @@ export default function SnapVerificationPrototype() {
             />
           ) : (
             <section className="dta-shell">
-            <div className="dta-hero-band px-6 py-8 sm:px-16 sm:py-10">
+            <div className="bg-white px-6 py-8 sm:px-16 sm:py-12">
             {mode === "client" ? (
               <button
                 type="button"
@@ -2339,18 +2339,25 @@ export default function SnapVerificationPrototype() {
               </button>
             ) : null}
 
-            <h1 className="mt-4 max-w-4xl text-3xl font-bold leading-tight text-[#141414] sm:text-4xl">Submit as much proof as you can now</h1>
-            <div className="mt-4 max-w-2xl space-y-2 text-lg leading-relaxed text-[#141414]">
-              <p>{recommendationIntro}</p>
-              <p className="text-base">Your recertification due date is [RecertificationDueDate].</p>
+            <h1 className="mt-4 max-w-4xl text-4xl font-bold leading-tight text-[#141414] sm:text-5xl">Submit proof now</h1>
+            <h2 className="mt-6 max-w-3xl text-2xl font-bold leading-tight text-[#141414] sm:text-3xl">
+              Submitting documents now will help avoid delays.
+            </h2>
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#141414]">
+              Your recertification due date is [RecertificationDueDate]
+            </p>
+            <button type="button" className="dta-button-primary mt-6 w-full sm:w-auto">
+              <span>Send documents to DTA</span>
+              <ArrowRight size={22} weight="bold" aria-hidden="true" />
+            </button>
+            <div className="mt-10 max-w-3xl">
+              <h2 className="text-2xl font-bold leading-tight text-[#141414] sm:text-3xl">
+                We suggest you submit the following based on your answers
+              </h2>
+              <p className="mt-5 text-base leading-relaxed text-[#141414] sm:text-lg">
+                DTA may ask for additional documents after a worker reviews your recertification.
+              </p>
             </div>
-            {mode === "client" && !showCombinedSkippedGuidance ? (
-              <div className="mt-5 max-w-2xl">
-                <InlineMessage tone="warning" title="DTA may request additional proof">
-                  The suggestions below are based on what you told us. DTA may ask for additional documents after a worker reviews your recertification.
-                </InlineMessage>
-              </div>
-            ) : null}
             </div>
 
             <div className="space-y-5 px-6 py-8 sm:px-16">
