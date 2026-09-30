@@ -345,18 +345,20 @@ const VERIFICATION_RULES = [
     "section": "Income/job change",
     "answer": "No longer working at employer",
     "title": "Proof that a job ended",
+    "examplesLabel": "Examples for proof that a job ended",
     "examples": [
-      "Recent paystubs or statements",
-      "Letter from employer showing gross income and number of hours worked",
-      "A termination notice or layoff letter",
-      "Employer letter/text/email",
+      "Recent paystubs or statements showing gross income",
+      "Letter from employer showing gross income",
+      "Layoff notice or termination letter or email from an employer",
+      "Copy of your unemployment claim or unemployment benefit information",
+      "Other document showing when and why the job stopped",
       "if self employed: business records or statements showing when the income ended"
     ],
     "required": true,
     "recommendationType": "Required",
     "dtaDataAvailable": "Sometimes",
     "dtaDataReliability": "Rarely ?\nThe Work Number?",
-    "microcopy": "You said someone is no longer working at an employer. We need to know when the job ended and any income they got in the last 4 weeks.\n\nMake sure any income amounts shows the gross income amount. Gross income is the amount before taxes or benefits are taken out.",
+    "microcopy": "You said someone is no longer working at an employer. We need to know when the job ended, the reason the job ended, and any pay in the last 4 weeks.\n\nMake sure any proof of pay shows the gross income amount. **Gross income** is the amount before taxes or benefits are taken out.",
     "source": "Interim report; Recertification",
     "helpText": ""
   },
@@ -1517,6 +1519,15 @@ function runPrototypeTests() {
   console.assert(
     JSON.stringify(selfEmploymentRecommendation?.examples).includes("past 3 months"),
     "Expected the self-employment recommendation to use a 3-month timeframe"
+  );
+
+  const jobEndedRecommendation = jobEnded.recs.find((rec) => rec.key === "INC-020");
+  console.assert(jobEndedRecommendation?.title === "Proof that a job ended", "Expected approved job-ended title");
+  console.assert(jobEndedRecommendation?.examplesLabel === "Examples for proof that a job ended", "Expected approved job-ended examples label");
+  console.assert(jobEndedRecommendation?.why.includes("the reason the job ended"), "Expected job-ended description to request a reason");
+  console.assert(
+    jobEndedRecommendation?.examples.at(-1) === "if self employed: business records or statements showing when the income ended",
+    "Expected the self-employment job-ended example"
   );
 
   const householdStatus = clone(EMPTY_APPLICATION);
