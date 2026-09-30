@@ -1732,7 +1732,7 @@ function RecommendationSection({ label, children }) {
   return (
     <section className="mt-8">
       <div className="border-b border-[#b7ced6] pb-2">
-        <h2 className="text-xs font-bold leading-snug text-[#141414]">{label}</h2>
+        <h2 className="mass-label-sm text-[#141414]">{label}</h2>
       </div>
       <div className="mt-5 space-y-5">
         {children}
@@ -1788,7 +1788,7 @@ function InlineExampleContent({ example }) {
 
 function ExampleList({ examples, nested = false }) {
   return (
-    <ul className={`${nested ? "mt-1" : "mt-2"} list-disc space-y-1 pl-5 text-sm leading-relaxed text-slate-700`}>
+    <ul className={`${nested ? "mt-1" : "mt-2"} mass-body list-disc space-y-1 pl-5 text-slate-700`}>
       {examples.map((example, index) => {
         if (typeof example === "string") {
           return <li key={example}>{example}</li>;
@@ -1835,14 +1835,14 @@ function InlineRichText({ text, italicizeBrackets = false }) {
   });
 }
 
-function RichText({ text, italic = false, italicizeBrackets = false }) {
+function RichText({ text, italic = false, italicizeBrackets = false, large = false }) {
   const blocks = String(text || "")
     .split(/\n{2,}/)
     .map((block) => block.trim())
     .filter(Boolean);
 
   return (
-    <div className={`space-y-2 text-sm leading-relaxed text-slate-700 ${italic ? "italic" : ""}`}>
+    <div className={`space-y-2 ${large ? "mass-body-lg" : "mass-body"} text-slate-700 ${italic ? "italic" : ""}`}>
       {blocks.map((block) => {
         const lines = block.split("\n").map((line) => line.trim()).filter(Boolean);
         const listItems = lines.filter((line) => line.startsWith("- ")).map((line) => line.replace(/^-\s+/, ""));
@@ -1876,7 +1876,7 @@ function DetailsToggle({ details }) {
     <div className="mt-3 w-full max-w-[400px] border border-[#b7ced6] bg-[#f5fbfc] p-3">
       <button
         type="button"
-        className="flex w-full items-center justify-between gap-3 text-left text-sm font-normal text-[#14558f] underline underline-offset-2"
+        className="mass-label flex w-full items-center justify-between gap-3 text-left text-[#14558f] underline underline-offset-2"
         aria-expanded={open}
         onClick={() => setOpen(!open)}
       >
@@ -1907,7 +1907,7 @@ function ExamplesDetailsToggle({ title, label, examples, note }) {
     <div className="mt-3 w-full">
       <button
         type="button"
-        className="flex w-fit max-w-full items-center gap-3 border-b-2 border-[#14558f] pb-0.5 text-left text-sm font-medium leading-snug text-[#14558f]"
+        className="mass-label flex w-fit max-w-full items-center gap-3 border-b-2 border-[#14558f] pb-0.5 text-left text-[#14558f]"
         aria-expanded={open}
         onClick={() => setOpen(!open)}
       >
@@ -1918,7 +1918,7 @@ function ExamplesDetailsToggle({ title, label, examples, note }) {
       <div className="mt-2">
         <ExampleList examples={examples} />
         {note ? (
-          <p className="mt-3 text-sm leading-relaxed text-slate-700">{note}</p>
+          <p className="mass-body mt-3 text-slate-700">{note}</p>
         ) : null}
       </div>
       ) : null}
@@ -1930,7 +1930,7 @@ function RecommendationCard({ rec }) {
   return (
     <div className="dta-card p-5 sm:p-6">
       <div className="flex flex-wrap items-center gap-3">
-        <h3 className="flex items-center gap-3 text-xl font-bold leading-tight text-[#141414]">
+        <h3 className="mass-heading-md flex items-center gap-3 text-[#141414]">
           <MayflowerIcon name={rec.iconName} size={36} />
           <span>
           {rec.title}
@@ -1939,11 +1939,11 @@ function RecommendationCard({ rec }) {
       </div>
 
       <div className="mt-2">
-        <RichText text={rec.why} />
+        <RichText text={rec.why} large />
       </div>
 
       {rec.learnMore ? (
-        <p className="mt-3 text-sm leading-relaxed">
+        <p className="mass-body mt-3">
           <a href={rec.learnMore.href} target="_blank" rel="noreferrer" className="font-semibold text-[#14558f] underline underline-offset-2">
             {rec.learnMore.text}
           </a>
@@ -1954,7 +1954,7 @@ function RecommendationCard({ rec }) {
         <div className="mt-3">
           <ExampleList examples={rec.examples} />
           {rec.examplesNote ? (
-            <p className="mt-3 text-sm leading-relaxed text-slate-700">{rec.examplesNote}</p>
+            <p className="mass-body mt-3 text-slate-700">{rec.examplesNote}</p>
           ) : null}
         </div>
       ) : (
@@ -1962,7 +1962,7 @@ function RecommendationCard({ rec }) {
       )}
 
       {rec.helperText ? (
-        <p className="mt-3 border-l-4 border-[#79a6b7] bg-[#f5fbfc] p-3 text-sm leading-relaxed text-slate-800">
+        <p className="mass-body mt-3 border-l-4 border-[#79a6b7] bg-[#f5fbfc] p-3 text-slate-800">
           {rec.helperText}
         </p>
       ) : null}
@@ -2339,11 +2339,11 @@ export default function SnapVerificationPrototype() {
               </button>
             ) : null}
 
-            <h1 className="mt-4 max-w-4xl text-4xl font-bold leading-tight text-[#141414] sm:text-5xl">Submit proof now</h1>
-            <h2 className="mt-6 max-w-3xl text-2xl font-bold leading-tight text-[#141414] sm:text-3xl">
+            <h1 className="mass-heading-2xl mt-4 max-w-4xl text-[#141414]">Submit proof now</h1>
+            <h2 className="mass-heading-sm mt-6 max-w-3xl text-[#141414]">
               Submitting documents now will help avoid delays.
             </h2>
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#141414]">
+            <p className="mass-heading-2xs mt-4 max-w-2xl text-[#141414]">
               Your recertification due date is [RecertificationDueDate]
             </p>
             <button type="button" className="dta-button-primary mt-6 w-full sm:w-auto">
@@ -2351,10 +2351,10 @@ export default function SnapVerificationPrototype() {
               <ArrowRight size={22} weight="bold" aria-hidden="true" />
             </button>
             <div className="mt-10 max-w-3xl">
-              <h2 className="text-2xl font-bold leading-tight text-[#141414] sm:text-3xl">
+              <h2 className="mass-heading-md text-[#141414]">
                 We suggest you submit the following based on your answers
               </h2>
-              <p className="mt-5 text-base leading-relaxed text-[#141414] sm:text-lg">
+              <p className="mass-body-lg mt-4 text-[#141414]">
                 DTA may ask for additional documents after a worker reviews your recertification.
               </p>
             </div>

@@ -87,6 +87,38 @@ body {
     border: 1px solid #d7e4e7;
   }
 
+  .mass-heading-2xl {
+    @apply text-[2.75rem] font-semibold leading-[1.1];
+  }
+
+  .mass-heading-md {
+    @apply text-[1.625rem] font-semibold leading-[1.2];
+  }
+
+  .mass-heading-sm {
+    @apply text-[1.5rem] font-semibold leading-[1.3];
+  }
+
+  .mass-heading-2xs {
+    @apply text-[1.125rem] font-semibold leading-[1.4];
+  }
+
+  .mass-body-lg {
+    @apply text-[1.125rem] font-normal leading-[1.8];
+  }
+
+  .mass-body {
+    @apply text-[1rem] font-normal leading-[1.8];
+  }
+
+  .mass-label-sm {
+    @apply text-[0.875rem] font-semibold leading-[1.2];
+  }
+
+  .mass-label {
+    @apply text-[1rem] font-medium leading-[1.2];
+  }
+
   .dta-button-primary {
     @apply inline-flex items-center justify-center gap-2 px-6 py-4 text-center text-base font-semibold text-white;
     min-height: 56px;
