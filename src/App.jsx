@@ -2348,8 +2348,8 @@ export default function SnapVerificationPrototype() {
               <span>Send documents to DTA</span>
               <ArrowRight size={22} weight="bold" aria-hidden="true" />
             </button>
-            <div className="mt-10 max-w-3xl">
-              <h2 className="mass-heading-md text-[#141414]">
+            <div className="mt-10">
+              <h2 className="mass-heading-md text-[#141414] lg:whitespace-nowrap">
                 We suggest you submit the following based on your answers
               </h2>
               <p className="mass-body-lg mt-4 text-[#141414]">
