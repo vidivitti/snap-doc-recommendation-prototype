@@ -2352,7 +2352,7 @@ export default function SnapVerificationPrototype() {
               <h2 className="mass-heading-md text-[#141414] lg:whitespace-nowrap">
                 We suggest you submit the following based on your answers
               </h2>
-              <p className="mass-body-lg mt-4 text-[#141414]">
+              <p className="mass-body-lg mt-2 text-[#141414]">
                 DTA may ask for additional documents after a worker reviews your recertification.
               </p>
             </div>
