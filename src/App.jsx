@@ -2270,7 +2270,16 @@ export default function SnapVerificationPrototype() {
           </header>
         ) : (
           <div className="dta-top-actions">
-            <div className="dta-view-toggle">
+            {clientScreen === "recommendations" ? (
+              <button
+                type="button"
+                onClick={() => setClientScreen("submitted")}
+                className="text-sm font-normal text-[#003b5c] underline"
+              >
+                Back to submitted screen
+              </button>
+            ) : null}
+            <div className="dta-view-toggle ml-auto">
               <button type="button" onClick={() => setMode("client")} className="dta-tab dta-tab-active">Client view</button>
               <button type="button" onClick={() => setMode("logic")} className="dta-tab">Logic view</button>
             </div>
@@ -2329,16 +2338,6 @@ export default function SnapVerificationPrototype() {
           ) : (
             <section className="dta-shell">
             <div className="bg-white px-6 pb-0 pt-8 sm:px-16 sm:pb-0 sm:pt-12">
-            {mode === "client" ? (
-              <button
-                type="button"
-                onClick={() => setClientScreen("submitted")}
-                className="mb-4 text-sm font-normal text-[#003b5c] underline"
-              >
-                Back to submitted screen
-              </button>
-            ) : null}
-
             <h1 className="mass-heading-xl mt-4 max-w-4xl text-[#141414]">Submit proof now</h1>
             <p className="mt-6 max-w-3xl text-[1.125rem] leading-[1.4] text-[#141414]">
               <strong className="block font-semibold">Submitting documents now will help avoid delays.</strong>

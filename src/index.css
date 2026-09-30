@@ -40,7 +40,7 @@ body {
   }
 
   .dta-top-actions {
-    @apply mx-auto mb-3 flex w-full max-w-[1012px] justify-end px-3 sm:px-0;
+    @apply mx-auto mb-3 flex w-full max-w-[1012px] flex-wrap items-end justify-between gap-3 px-3 sm:flex-nowrap sm:px-0;
   }
 
   .dta-view-toggle {
