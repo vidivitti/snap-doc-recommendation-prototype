@@ -99,6 +99,10 @@ body {
     @apply text-[1.5rem] font-semibold leading-[1.3];
   }
 
+  .mass-heading-xs {
+    @apply text-[1.375rem] font-semibold leading-[1.3];
+  }
+
   .mass-heading-2xs {
     @apply text-[1.125rem] font-semibold leading-[1.4];
   }
