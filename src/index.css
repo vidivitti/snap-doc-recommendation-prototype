@@ -73,10 +73,6 @@ body {
     background: #003b5c;
   }
 
-  .dta-hero-band {
-    background: #e5f5f8;
-  }
-
   .dta-card {
     @apply bg-white;
     border: 1px solid #b7ced6;

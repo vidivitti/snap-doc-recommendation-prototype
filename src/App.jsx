@@ -2130,17 +2130,17 @@ function ClientActions() {
 function SubmittedScreen({ applicationNumber, onReviewProof }) {
   return (
     <section className="dta-shell">
-      <div className="dta-hero-band px-6 py-8 sm:px-16 sm:py-10">
+      <div className="bg-white px-6 pb-8 pt-8 sm:px-16 sm:pb-10 sm:pt-12">
         <div className="grid max-w-4xl grid-cols-[56px_1fr] items-start gap-4">
           <MayflowerIcon name="check" size={54} className="self-start pt-1 text-[#00856d]" />
           <div>
-            <h1 className="max-w-3xl text-3xl font-bold leading-tight text-[#141414] sm:text-4xl">
+            <h1 className="mass-heading-xl max-w-3xl text-[#141414]">
               Your Recertification was submitted
             </h1>
           </div>
         </div>
 
-        <p className="mt-8 max-w-4xl text-lg text-[#141414]">
+        <p className="mt-6 max-w-4xl text-[1.125rem] leading-[1.4] text-[#141414]">
           Your web application number is <strong className="font-bold">{applicationNumber}</strong>
         </p>
         <a href="#" className="mt-3 inline-block text-base font-bold text-[#145f9f] underline">
