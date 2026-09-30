@@ -358,7 +358,7 @@ const VERIFICATION_RULES = [
     "recommendationType": "Required",
     "dtaDataAvailable": "Sometimes",
     "dtaDataReliability": "Rarely ?\nThe Work Number?",
-    "microcopy": "You said someone is no longer working at an employer. We need to know when the job ended, the reason the job ended, and any pay in the last 4 weeks.\n\nMake sure any proof of pay shows the gross income amount. **Gross income** is the amount before taxes or benefits are taken out.",
+    "microcopy": "You said someone is no longer working at an employer. We need to know when the job ended, the reason the job ended, and any pay in the last 4 weeks.\n\nMake sure any proof of pay shows the **gross income** amount. Gross income is the amount before taxes or benefits are taken out.",
     "source": "Interim report; Recertification",
     "helpText": ""
   },
@@ -1525,6 +1525,10 @@ function runPrototypeTests() {
   console.assert(jobEndedRecommendation?.title === "Proof that a job ended", "Expected approved job-ended title");
   console.assert(jobEndedRecommendation?.examplesLabel === "Examples for proof that a job ended", "Expected approved job-ended examples label");
   console.assert(jobEndedRecommendation?.why.includes("the reason the job ended"), "Expected job-ended description to request a reason");
+  console.assert(
+    jobEndedRecommendation?.why.includes("shows the **gross income** amount. Gross income is"),
+    "Expected the first gross-income phrase to be bold"
+  );
   console.assert(
     jobEndedRecommendation?.examples.at(-1) === "if self employed: business records or statements showing when the income ended",
     "Expected the self-employment job-ended example"
