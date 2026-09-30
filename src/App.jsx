@@ -2328,7 +2328,7 @@ export default function SnapVerificationPrototype() {
             />
           ) : (
             <section className="dta-shell">
-            <div className="bg-white px-6 py-8 sm:px-16 sm:py-12">
+            <div className="bg-white px-6 pb-0 pt-8 sm:px-16 sm:pb-0 sm:pt-12">
             {mode === "client" ? (
               <button
                 type="button"
@@ -2343,7 +2343,7 @@ export default function SnapVerificationPrototype() {
             <h2 className="mass-heading-xs mt-6 max-w-3xl text-[#141414]">
               Submitting documents now will help avoid delays.
             </h2>
-            <p className="mass-body mt-4 max-w-2xl text-[#141414]">
+            <p className="mass-body mt-2 max-w-2xl text-[#141414]">
               Your recertification due date is [RecertificationDueDate]
             </p>
             <button type="button" className="dta-button-primary mt-6 w-full sm:w-auto">
@@ -2360,7 +2360,7 @@ export default function SnapVerificationPrototype() {
             </div>
             </div>
 
-            <div className="space-y-5 px-6 py-8 sm:px-16">
+            <div className="space-y-5 px-6 pb-8 pt-0 sm:px-16">
               {result.recs.length === 0 && !showSkippedIncomeGuidance && !showSkippedExpensesGuidance ? (
                 <div className="dta-card bg-white p-4 text-sm text-slate-700">No recommendations yet. Use Logic view to select application answers.</div>
               ) : null}
