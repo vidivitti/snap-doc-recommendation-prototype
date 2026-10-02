@@ -1972,7 +1972,7 @@ function RecommendationCard({ rec }) {
   );
 }
 
-function ToggleInput({ app, setApp, path, label }) {
+function ToggleInput({ app, setApp, path, label, recommendSuppressing = false }) {
   const checked = Boolean(getPathValue(app, path));
 
   return (
@@ -1986,7 +1986,10 @@ function ToggleInput({ app, setApp, path, label }) {
           setApp(next);
         }}
       />
-      <span>{label}</span>
+      <span className={recommendSuppressing ? "text-[#680A1D]" : ""}>
+        {label}
+        {recommendSuppressing ? " (Recommend suppressing/ hiding from client view)" : null}
+      </span>
     </label>
   );
 }
@@ -2065,20 +2068,20 @@ function ApplicationEditor({ app, setApp }) {
 
         <InputGroup title="Unearned income">
           <div className="sm:col-span-2 text-sm font-bold text-slate-700">New unearned income</div>
-          <ToggleInput app={app} setApp={setApp} path="income.ssi.reported" label="SSI" />
-          <ToggleInput app={app} setApp={setApp} path="income.rsdi.reported" label="RSDI" />
-          <ToggleInput app={app} setApp={setApp} path="income.unemployment.reported" label="Unemployment" />
-          <ToggleInput app={app} setApp={setApp} path="income.childSupportReceived.reported" label="Child support received" />
+          <ToggleInput app={app} setApp={setApp} path="income.ssi.reported" label="SSI" recommendSuppressing />
+          <ToggleInput app={app} setApp={setApp} path="income.rsdi.reported" label="RSDI" recommendSuppressing />
+          <ToggleInput app={app} setApp={setApp} path="income.unemployment.reported" label="Unemployment" recommendSuppressing />
+          <ToggleInput app={app} setApp={setApp} path="income.childSupportReceived.reported" label="Child support received" recommendSuppressing />
           <ToggleInput app={app} setApp={setApp} path="income.pension.reported" label="Pension" />
           <ToggleInput app={app} setApp={setApp} path="income.veteransBenefits.reported" label="Veterans benefits" />
           <ToggleInput app={app} setApp={setApp} path="income.rentalIncome.reported" label="Rental income" />
           <ToggleInput app={app} setApp={setApp} path="income.workersComp.reported" label="Workers comp" />
           <ToggleInput app={app} setApp={setApp} path="income.pfml.reported" label="Paid family and medical leave" />
           <div className="sm:col-span-2 mt-2 text-sm font-bold text-slate-700">Changed unearned income</div>
-          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.ssi" label="No longer receiving SSI" />
-          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.rsdi" label="No longer receiving RSDI" />
-          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.unemployment" label="No longer receiving Unemployment" />
-          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.childSupportReceived" label="No longer receiving Child support" />
+          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.ssi" label="No longer receiving SSI" recommendSuppressing />
+          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.rsdi" label="No longer receiving RSDI" recommendSuppressing />
+          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.unemployment" label="No longer receiving Unemployment" recommendSuppressing />
+          <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.childSupportReceived" label="No longer receiving Child support" recommendSuppressing />
           <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.pension" label="No longer receiving Pension" />
           <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.veteransBenefits" label="No longer receiving Veterans benefits" />
           <ToggleInput app={app} setApp={setApp} path="income.changedUnearned.rentalIncome" label="No longer receiving Rental income" />
