@@ -2099,15 +2099,11 @@ function ApplicationEditor({ app, setApp }) {
 
         <InputGroup title="Dependent care expenses">
           <ToggleInput app={app} setApp={setApp} path="expenses.childSupportPaid.reported" label="Child support paid" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.dependentCare.reported" label="Dependent care (general expenses)" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.dependentCare.driveToProvider" label="Drive dependent to/from care provider" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.dependentCare.paidTransportation" label="Pay for transportation for dependent care" />
+          <ToggleInput app={app} setApp={setApp} path="expenses.dependentCare.reported" label="Any dependent care expenses (general expenses, transportation, & travel)" />
         </InputGroup>
 
         <InputGroup title="Medical expenses">
-          <ToggleInput app={app} setApp={setApp} path="expenses.medical.healthInsuranceRelated" label="Health insurance expenses" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.medical.reported" label="Medical expenses (general)" />
-          <ToggleInput app={app} setApp={setApp} path="expenses.medical.transportation" label="Drive to medical appointments or pharmacy" />
+          <ToggleInput app={app} setApp={setApp} path="expenses.medical.reported" label="Any medical expenses (general expenses, health insurance expenses, transportation expenses, & travel)" />
         </InputGroup>
       </div>
     </section>
