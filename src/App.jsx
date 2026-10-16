@@ -332,7 +332,7 @@ const VERIFICATION_RULES = [
     "recommendationType": "Required",
     "dtaDataAvailable": "Sometimes",
     "dtaDataReliability": "Sometimes -\nThe Work Number ?",
-    "microcopy": "You said someone is still working but their income changed. Send proof that shows the new gross income amount or new schedule.\n\nMake sure any income amounts shows the gross income amount. Gross income is the amount before taxes or benefits are taken out.",
+    "microcopy": "You said someone is still working but their income changed. Send proof that shows the new gross income amount or new schedule.\n\nGross income is the amount before taxes or benefits are taken out.",
     "source": "Interim report; Recertification",
     "helpText": ""
   },
@@ -1111,14 +1111,9 @@ const VERIFICATION_RULES = [
     "title": "Proof of medical expenses",
     "examples": [
       { "type": "heading", "text": "Common health insurance and medical expenses include:" },
-      "Copay receipts",
-      "Explanation of benefits",
-      "Pharmacy printout",
-      "Provider bill",
-      "Insurer statement",
-      "Premium bill",
-      "One-time medical bills",
-      "Prescription medication",
+      "Insurer statement, explanation of benefits, or premium bill",
+      "Pharmacy printout or prescription medication receipts",
+      "Provider bill, copay receipts, or one-time medical bill",
       "Over-the-counter medical items",
       "Dental care or dentures",
       "Eyeglasses",
@@ -2224,6 +2219,25 @@ function SubmittedScreen({ applicationNumber, onReviewProof }) {
         >
           Review suggested proof →
         </button>
+
+        <section aria-labelledby="voter-registration-heading" className="mt-12 max-w-4xl border-t border-[#d0d0d0] pt-8">
+          <h2 id="voter-registration-heading" className="text-xl font-bold text-[#141414]">
+            Voter Registration
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-[#141414]">
+            The National Voter Registration Act of 1993 requires DTA to give you the opportunity to register to vote. DTA mailed you a Voter Registration application with your SNAP Recertification form. Let DTA know if you need help to register. You may also register to vote online by clicking{' '}
+            <a
+              href="https://www.sec.state.ma.us/ovr/"
+              className="text-[#14558f] underline"
+              aria-label="Register to vote online"
+            >
+              here.
+            </a>
+          </p>
+          <p className="mt-5 text-base leading-relaxed text-[#141414]">
+            Applying to register or declining to register to vote will not affect the amount of assistance that you will be provided by this agency. If you are not a U.S. citizen, you are not eligible to vote, and you should not register to vote.
+          </p>
+        </section>
       </div>
     </section>
   );
@@ -2384,7 +2398,7 @@ export default function SnapVerificationPrototype() {
 
               <div className="dta-card-soft mt-8 p-5">
                 <p className="text-sm leading-relaxed text-slate-700">
-                  Submit as much proof as you can now — it will reduce back and forth during the process and can reduce delays or missed benefits.
+                  Submit as much proof as you can now — it will reduce back and forth during the process and can reduce delays or missed benefits. Tell us if it is hard to get this proof.
                 </p>
                 <p className="mt-3 text-sm leading-relaxed text-slate-700">
                   If you need more time you can come back and submit proof until [YourRecertificationDueDate]
