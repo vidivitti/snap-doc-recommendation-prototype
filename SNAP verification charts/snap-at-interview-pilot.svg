@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="828" viewBox="0 0 760 828" role="img" aria-labelledby="title desc">
+  <title id="title">At interview · Pilot scenario</title>
+  <desc id="desc">Pilot scenario: 1,891 wrapped with no VC-1 issued (20.0%), 1,059 wrapped but VC-1 also issued (11.2%), 947 additional wrapped cases with pilot (10.0%), and 5,573 remaining not wrapped (58.8%). Projected total wrapped is 3,897 of 9,470 cases (41.2%). VC-1 status for the additional pilot cases is unspecified.</desc>
+  <rect width="760" height="828" fill="#FFFFFF"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#222222">
+    <text x="40" y="52" font-size="26" fill="#14558F">At interview · Pilot scenario</text>
+    <text x="40" y="89" font-size="21">9,470 total cases</text>
+    <text x="40" y="121" font-size="17" fill="#535353">10% of all cases additionally wrapped with intervention</text>
+    <path d="M380,315 L380.0000,155.0000 A160,160 0 0,1 532.0703,265.2545 Z" fill="#14558F"/>
+    <path d="M380,315 L532.0703,265.2545 A160,160 0 0,1 528.1987,375.3087 Z" fill="#8AAAC7"/>
+    <path d="M380,315 L528.1987,375.3087 A160,160 0 0,1 464.4467,450.8998 Z" fill="#2D6A46"/>
+    <path d="M380,315 L464.4467,450.8998 A160,160 0 1,1 380.0000,155.0000 Z" fill="#535353"/>
+    <rect x="40" y="510" width="16" height="16" fill="#14558F"/>
+    <text x="70" y="526" font-size="20">Wrapped (no VC-1 issued)</text>
+    <text x="720" y="526" font-size="20" text-anchor="end">1,891  (20.0%)</text>
+    <rect x="40" y="558" width="16" height="16" fill="#8AAAC7"/>
+    <text x="70" y="574" font-size="20">Wrapped (but VC-1 also issued)</text>
+    <text x="720" y="574" font-size="20" text-anchor="end">1,059  (11.2%)</text>
+    <rect x="40" y="606" width="16" height="16" fill="#2D6A46"/>
+    <text x="70" y="622" font-size="20">Additional wrapped cases with pilot (TBD)</text>
+    <text x="720" y="622" font-size="20" text-anchor="end">947  (10.0%)</text>
+    <rect x="40" y="654" width="16" height="16" fill="#535353"/>
+    <text x="70" y="670" font-size="20">Remaining not wrapped</text>
+    <text x="720" y="670" font-size="20" text-anchor="end">5,573  (58.8%)</text>
+    <line x1="40" x2="720" y1="700" y2="700" stroke="#D6D6D6"/>
+    <text x="40" y="738" font-size="19">Projected total wrapped</text>
+    <text x="720" y="738" font-size="19" text-anchor="end">3,897 / 9,470  (41.2%)</text>
+    <text x="40" y="777" font-size="19">Increase in wrap rate</text>
+    <text x="720" y="777" font-size="19" text-anchor="end">+10 percentage points</text>
+  </g>
+</svg>
